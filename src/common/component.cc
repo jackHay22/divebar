@@ -5,7 +5,9 @@
  */
 
 #include "component.h"
+#ifndef __APPLE__
 #include <filesystem>
+#endif
 
 namespace common {
 
@@ -317,10 +319,18 @@ namespace common {
    * @return      the full path to load from
    */
   std::string component_t::rsrc_path(const std::string& path) const {
+#ifndef __APPLE__
     std::filesystem::path dir(resource_dir_prefix);
     std::filesystem::path rsrc(path);
 
     std::filesystem::path full_path = dir / rsrc;
+
     return full_path.string();
+#else
+    if (resource_dir_prefix.back() == '/') {
+      return resource_dir_prefix + path;
+    }
+    return resource_dir_prefix + "/" + path;
+#endif
   }
 }

@@ -56,7 +56,7 @@ namespace tilemap {
      * @param  other the other component
      * @return       whether the two collide
      */
-    bool collides_with(const common::component_t& other) const;
+    bool collides_with(const common::component_t& other) const override;
 
     /**
      * Check to see if the map is solid at this position

@@ -18,7 +18,7 @@ namespace tilemap {
    */
   class virtual_tile_t : public common::component_t {
   private:
-    void load(SDL_Renderer&, const common::component_t&) {}
+    void load(SDL_Renderer&, const common::component_t&) override {}
   public:
     /**
      * Constructor
