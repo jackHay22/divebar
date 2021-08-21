@@ -327,7 +327,8 @@ namespace common {
 
     return full_path.string();
 #else
-    if (resource_dir_prefix.back() == '/') {
+    if ((resource_dir_prefix.size() > 0) &&
+        (resource_dir_prefix.back() == '/')) {
       return resource_dir_prefix + path;
     }
     return resource_dir_prefix + "/" + path;
