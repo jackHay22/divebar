@@ -33,7 +33,7 @@ namespace engine {
           return EXIT_SUCCESS;
         } else {
           //handle event
-          man->handle_event(e);
+          man->handle_event_manager(e);
         }
       }
 
@@ -46,14 +46,14 @@ namespace engine {
         //restart the timer
         start = std::chrono::steady_clock::now();
         //update the state
-        man->update();
+        man->update_manager();
       }
 
       //clear the screen
       win->clear_screen();
 
       //draw the window contents
-      man->render(win->get_renderer());
+      man->render_manager(win->get_renderer());
 
       //render the repaint
       win->render();

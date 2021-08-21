@@ -33,7 +33,7 @@ namespace state {
    * Update this component
    * @param parent the parent component
    */
-  void manager_t::update() {
+  void manager_t::update_manager() {
     //update the current component
     common::component_t::update_child(current_state);
   }
@@ -42,7 +42,7 @@ namespace state {
    * Handle an sdl event
    * @param e the sdl event
    */
-  void manager_t::handle_event(const SDL_Event& e) {
+  void manager_t::handle_event_manager(const SDL_Event& e) {
     //let the current component handle the event
     common::component_t::child_handle_event(e,current_state);
   }
@@ -50,7 +50,7 @@ namespace state {
   /**
    * Render the current state
    */
-  void manager_t::render(SDL_Renderer& renderer) const {
+  void manager_t::render_manager(SDL_Renderer& renderer) const {
     //render the active state
     common::component_t::render_child(renderer,camera,current_state);
   }

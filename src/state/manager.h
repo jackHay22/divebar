@@ -50,18 +50,18 @@ namespace state {
     /**
      * Update the state
      */
-    void update();
+    void update_manager();
 
     /**
      * Handle an sdl event
      * @param e the sdl event
      */
-    void handle_event(const SDL_Event& e);
+    void handle_event_manager(const SDL_Event& e);
 
     /**
      * Render the current state
      */
-    void render(SDL_Renderer& renderer) const;
+    void render_manager(SDL_Renderer& renderer) const;
 
     /**
      * Set the current state
