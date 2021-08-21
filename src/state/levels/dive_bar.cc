@@ -31,19 +31,21 @@ namespace levels {
         this->rsrc_path("tilesets/divebar.png")
       );
 
-    //add foreground map layers (includes ground)
+    //add background map layers
     this->add_child(std::make_unique<tilemap::tilemap_t>(
-      this->rsrc_path("maps/divebar/fg.txt"),
-      tileset, 2, -1
+      this->rsrc_path("maps/divebar.txt"),
+      tileset, std::vector<int>{2,3,4},
+      -1
     ));
 
     //load entities
 
 
-    //load the background map layers
+    //load the foreground map layers (includes ground)
     this->add_child(std::make_unique<tilemap::tilemap_t>(
-      this->rsrc_path("maps/divebar/fg.txt"),
-      tileset, 2, 1
+      this->rsrc_path("maps/divebar.txt"),
+      tileset, std::vector<int>{0,1},
+      1 // second layer is solid
     ));
   }
 

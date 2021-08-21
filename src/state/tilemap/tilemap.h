@@ -26,8 +26,8 @@ namespace tilemap {
     std::string map_path;
     //the tileset to use
     std::shared_ptr<common::image_t> tileset;
-    //the number of layers in the map
-    size_t num_layers;
+    //the layer indices
+    std::vector<int> layers;
     //the index of the solid layer (or -1)
     int solid_idx;
 
@@ -59,12 +59,12 @@ namespace tilemap {
      * Constructor
      * @param map_path   path to tilemap resource
      * @param tileset    the tileset to use
-     * @param num_layers the number of layers in the tilemap
+     * @param layers     the layer indices to load
      * @param solid_idx  the index of the solid layer (or -1)
      */
     tilemap_t(const std::string& map_path,
               std::shared_ptr<common::image_t> tileset,
-              size_t num_layers,
+              std::vector<int>&& layers,
               int solid_idx);
     tilemap_t(const tilemap_t&) = delete;
     tilemap_t& operator=(const tilemap_t&) = delete;

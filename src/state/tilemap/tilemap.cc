@@ -14,19 +14,19 @@ namespace tilemap {
    * Constructor
    * @param map_path   path to tilemap resource
    * @param tileset    the tileset to use
-   * @param num_layers the number of layers in the tilemap
+   * @param layers     the layer indices to load
    * @param solid_idx  the index of the solid layer (or -1)
    */
   tilemap_t::tilemap_t(const std::string& map_path,
                       std::shared_ptr<common::image_t> tileset,
-                      size_t num_layers,
+                      std::vector<int>&& layers,
                       int solid_idx)
     : component_t({0,0,0,0}, COMPONENT_COLLIDABLE
                            | COMPONENT_SOLID
                            | COMPONENT_VISIBLE),
       map_path(map_path),
       tileset(tileset),
-      num_layers(num_layers),
+      layers(layers),
       solid_idx(solid_idx) {}
 
   /**
@@ -37,8 +37,12 @@ namespace tilemap {
   void tilemap_t::load(SDL_Renderer& renderer,
                        const common::component_t& parent) {
     //add map layers
-    for (size_t i=0; i<num_layers; i++) {
-      component_t::add_child(std::make_unique<layer_t>(map_path, tileset, i, (int)i==solid_idx));
+    for (size_t i=0; i<layers.size(); i++) {
+      component_t::add_child(
+        std::make_unique<layer_t>(map_path,
+                                  tileset,
+                                  layers.at(i),
+                                  i==solid_idx));
     }
 
     //load child resources
