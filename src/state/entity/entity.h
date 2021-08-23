@@ -23,8 +23,6 @@ namespace entity {
   private:
     //the health of the entity
     int health;
-    //whether the entity is facing left
-    bool left;
 
     /**
      * Update the state
@@ -40,6 +38,8 @@ namespace entity {
   protected:
     //the current action of the entity
     size_t current_action;
+    //whether the entity is facing left
+    bool left;
 
   public:
     /**

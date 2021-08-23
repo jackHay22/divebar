@@ -13,6 +13,7 @@
 #include <string>
 #include "../../../common/component.h"
 #include "../../../common/animation.h"
+#include "action.h"
 
 namespace state {
 namespace entity {
@@ -21,7 +22,7 @@ namespace actions {
   /*
    * The idle state of an entity
    */
-  class idle_t : public common::component_t {
+  class idle_t : public action_t {
   private:
 
     /**

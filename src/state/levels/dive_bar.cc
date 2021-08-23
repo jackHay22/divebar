@@ -58,16 +58,24 @@ namespace levels {
 
     //load children
     component_t::load_children(renderer);
+
+    //tilemap now loaded, get dimensions
+    const tilemap::tilemap_t& solid_layer = get_nth_child<tilemap::tilemap_t>(2);
+    //set the max bounds for camera lock
+    this->set_max_bounds(solid_layer.get_map_width(), solid_layer.get_map_height());
   }
 
   /**
    * Update the state
    */
   void dive_bar_t::update(common::component_t& parent) {
+    //get the player position
+    const SDL_Rect& player_bounds = this->get_nth_child(1).get_bounds();
 
-    //TODO center the camera on the player
-    //parent.get_as<level_t>().set_camera({});
+    //center the camera
+    this->center_camera(player_bounds.x, player_bounds.y);
 
+    //update components in level
     component_t::update_children();
   }
 

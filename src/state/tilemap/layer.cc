@@ -274,8 +274,8 @@ namespace tilemap {
           sample_bounds.y = tile_dim * (tile_idx / tiles_per_row);
 
           //set the position to render the tileset sample
-          render_bounds.x = tile_dim * j;
-          render_bounds.y = tile_dim * i;
+          render_bounds.x = (tile_dim * j) - camera.x;
+          render_bounds.y = (tile_dim * i) - camera.y;
 
           //check if visible to camera
           if (current_tile.is_visible(camera)) {
@@ -289,6 +289,22 @@ namespace tilemap {
         }
       }
     }
+  }
+
+  /**
+   * Get the width of this layer
+   * @return layer width
+   */
+  int layer_t::get_layer_width() const {
+    return contents.at(0).size() * tile_dim;
+  }
+
+  /**
+   * Get the height of this layer
+   * @return layer height
+   */
+  int layer_t::get_layer_height() const {
+    return contents.size() * tile_dim;
   }
 
 }}

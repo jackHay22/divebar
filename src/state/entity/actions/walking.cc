@@ -18,7 +18,7 @@ namespace actions {
    */
   walking_t::walking_t(std::unique_ptr<common::anim_t> flat_anim,
                        std::unique_ptr<common::anim_t> up_anim)
-    : common::component_t({0,0,0,0}, COMPONENT_VISIBLE),
+    : action_t(),
       walking_up(false) {
     //add the animations as children of this component
     this->add_child(std::move(flat_anim));
@@ -39,6 +39,9 @@ namespace actions {
    * Update the state
    */
   void walking_t::update(common::component_t& parent) {
+    //lock the action if walking up (action can be preempted if not walking up)
+    this->set_completed(!walking_up);
+
     //check whether the parent is facing left
     bool facing_left = parent.get_as<entity_t>().facing_left();
     //change in x based on direction

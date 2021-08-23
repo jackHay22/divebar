@@ -24,7 +24,8 @@ namespace entity {
   player_t::player_t(SDL_Rect position,
                      std::shared_ptr<common::image_t> anim_sheet)
     : entity_t(position,100),
-      anim_sheet(anim_sheet) {}
+      anim_sheet(anim_sheet),
+      next_action(-1) {}
 
   /**
    * Load actions for the player
@@ -60,6 +61,22 @@ namespace entity {
   }
 
   /**
+   * Update the player
+   */
+  void player_t::update(common::component_t& parent) {
+    //get the current action
+    actions::action_t& action = this->get_nth_child<actions::action_t>(current_action);
+
+    if ((next_action != -1) && action.action_completed()) {
+      current_action = next_action;
+      //clear
+      next_action = -1;
+    }
+    //update the current action
+    common::component_t::update_child(current_action);
+  }
+
+  /**
    * Handle input events, delegate to action
    * @param parent the component parent
    * @param event the sdl event
@@ -67,7 +84,28 @@ namespace entity {
   void player_t::handle_event(component_t& parent,
                               const SDL_Event& e) {
     if (e.type == SDL_KEYDOWN) {
+      switch (e.key.keysym.sym) {
+        case SDLK_a:
+          next_action = ACTION_WALKING;
+          left = true;
+          break;
+        case SDLK_d:
+          next_action = ACTION_WALKING;
+          left = false;
+          break;
+      }
 
+    } else if (e.type == SDL_KEYUP) {
+      switch (e.key.keysym.sym) {
+        case SDLK_a:
+          //stop walking once cycle complete
+          next_action = ACTION_IDLE;
+          break;
+        case SDLK_d:
+          //stop walking once cycle complete
+          next_action = ACTION_IDLE;
+          break;
+      }
     }
   }
 

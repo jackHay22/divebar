@@ -19,8 +19,8 @@ namespace entity {
                                                COMPONENT_COLLIDABLE |
                                                COMPONENT_GRAVITY),
       health(health),
-      left(false),
-      current_action(0) {}
+      current_action(0),
+      left(false) {}
 
   /**
    * Update the state
@@ -35,8 +35,8 @@ namespace entity {
    */
   void entity_t::render(SDL_Renderer& renderer,
                         const SDL_Rect& camera) const {
-    //TEMP
-    debug_render_bounds(renderer,camera);
+    // //TEMP
+    // debug_render_bounds(renderer,camera);
     //render the current action child
     common::component_t::render_child(renderer,
                                       camera,

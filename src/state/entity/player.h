@@ -23,6 +23,8 @@ namespace entity {
   private:
     //animations used by this player (shared)
     std::shared_ptr<common::image_t> anim_sheet;
+    //the action to switch to once the current one is finished (or -1)
+    int next_action;
 
     /**
      * Load actions for the player
@@ -31,6 +33,11 @@ namespace entity {
      */
     void load(SDL_Renderer& renderer,
               const component_t& parent) override;
+
+    /**
+     * Update the player
+     */
+    void update(common::component_t& parent) override;
 
     /**
      * Handle input events, delegate to action

@@ -74,6 +74,15 @@ namespace common {
     }
 
     /**
+     * Get the nth child as a component
+     * @param  i child index
+     * @return   the child
+     */
+    component_t& get_nth_child(size_t i) {
+      return *this->children.at(i);
+    }
+
+    /**
      * Update this component, takes mutable reference to
      * parent (can update --i.e. environmental interation)
      * Implemented by the concrete type

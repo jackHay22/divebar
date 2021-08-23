@@ -20,6 +20,9 @@ namespace levels {
   private:
     //level maintains its own camera
     SDL_Rect level_camera;
+    //the max width and max height of the level
+    int max_width;
+    int max_height;
 
   protected:
 
@@ -29,6 +32,20 @@ namespace levels {
     void render(SDL_Renderer& renderer,
                 const SDL_Rect& camera) const override;
 
+    /**
+     * Center the camera at some position
+     * @param x position x
+     * @param y position y
+     */
+    void center_camera(int x, int y);
+
+    /**
+     * Set the max dimensions of the level
+     * @param max_width  the max level width
+     * @param max_height the max level height
+     */
+    void set_max_bounds(int max_width, int max_height);
+
   public:
     /**
      * Default constructor
@@ -37,11 +54,6 @@ namespace levels {
     level_t(const level_t&) = delete;
     level_t& operator=(const level_t&) = delete;
 
-    /**
-     * Set the camera position for this level
-     * @param camera the new camera position
-     */
-    void set_camera(SDL_Rect&& camera);
   };
 
 }}

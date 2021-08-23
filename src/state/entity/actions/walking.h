@@ -13,6 +13,7 @@
 #include <string>
 #include "../../../common/component.h"
 #include "../../../common/animation.h"
+#include "action.h"
 
 namespace state {
 namespace entity {
@@ -21,7 +22,7 @@ namespace actions {
   /*
    * A walking state for an entity
    */
-  class walking_t : public common::component_t {
+  class walking_t : public action_t {
   private:
     //whether this entity is walking up
     bool walking_up;

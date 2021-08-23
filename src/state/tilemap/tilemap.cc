@@ -74,4 +74,28 @@ namespace tilemap {
     return false;
   }
 
+  /**
+   * Compute the width of the map
+   * @return map width
+   */
+  int tilemap_t::get_map_width() const {
+    if (solid_idx > -1) {
+      return this->get_nth_child<layer_t>(solid_idx).get_layer_width();
+    } else {
+      return this->get_nth_child<layer_t>(0).get_layer_width();
+    }
+  }
+
+  /**
+   * Compute the width of the map
+   * @return map width
+   */
+  int tilemap_t::get_map_height() const {
+    if (solid_idx > -1) {
+      return this->get_nth_child<layer_t>(solid_idx).get_layer_height();
+    } else {
+      return this->get_nth_child<layer_t>(0).get_layer_height();
+    }
+  }
+
 }}

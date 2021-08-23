@@ -16,7 +16,7 @@ namespace actions {
    * @param idle_anim the animation for the idle action
    */
   idle_t::idle_t(std::unique_ptr<common::anim_t> idle_anim)
-    : common::component_t({0,0,0,0}, COMPONENT_VISIBLE) {
+    : action_t() {
     this->add_child(std::move(idle_anim));
   }
 
@@ -27,6 +27,7 @@ namespace actions {
    */
   void idle_t::load(SDL_Renderer& renderer,
                     const common::component_t& parent) {
+    this->set_completed(true); //can always toggle action off
     component_t::load_children(renderer);
   }
 

@@ -68,6 +68,18 @@ namespace tilemap {
               int solid_idx);
     tilemap_t(const tilemap_t&) = delete;
     tilemap_t& operator=(const tilemap_t&) = delete;
+
+    /**
+     * Compute the width of the map
+     * @return map width
+     */
+    int get_map_width() const;
+
+    /**
+     * Compute the width of the map
+     * @return map width
+     */
+    int get_map_height() const;
   };
 
 }}

@@ -94,6 +94,18 @@ namespace tilemap {
             bool solid);
     layer_t(const layer_t&) = delete;
     layer_t& operator=(const layer_t&) = delete;
+
+    /**
+     * Get the width of this layer
+     * @return layer width
+     */
+    int get_layer_width() const;
+
+    /**
+     * Get the height of this layer
+     * @return layer height
+     */
+    int get_layer_height() const;
   };
 
 }}
