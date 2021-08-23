@@ -18,16 +18,16 @@ namespace entity {
     : common::component_t(std::move(position), COMPONENT_VISIBLE |
                                                COMPONENT_COLLIDABLE |
                                                COMPONENT_GRAVITY),
-      current(0),
       health(health),
-      left(false) {}
+      left(false),
+      current_action(0) {}
 
   /**
    * Update the state
    */
   void entity_t::update(common::component_t& parent) {
     //update the current action child
-    common::component_t::update_child(current);
+    common::component_t::update_child(current_action);
   }
 
   /**
@@ -36,7 +36,9 @@ namespace entity {
   void entity_t::render(SDL_Renderer& renderer,
                         const SDL_Rect& camera) const {
     //render the current action child
-    common::component_t::render_child(renderer,camera,current);
+    common::component_t::render_child(renderer,
+                                      camera,
+                                      current_action);
   }
 
   /**

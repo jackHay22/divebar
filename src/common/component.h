@@ -16,11 +16,12 @@
 namespace common {
 
   //flags
-  #define COMPONENT_COLLIDABLE 0x80 // a physical component in the map
-  #define COMPONENT_SOLID      0x40 // Other components cannot move through this one
-  #define COMPONENT_VISIBLE    0x20 // Component should be rendered
-  #define COMPONENT_GRAVITY    0x10 // This component is effected by gravity
-  #define COMPONENT_REMOVE     0x08 // this component should be removed
+  #define COMPONENT_COLLIDABLE     0x80 // a physical component in the map (can collide with solid components)
+  #define COMPONENT_SOLID          0x40 // Other components cannot move through this one
+  #define COMPONENT_VISIBLE        0x20 // Component should be rendered when the camera can see it
+  #define COMPONENT_GRAVITY        0x10 // This component is effected by gravity
+  #define COMPONENT_REMOVE         0x08 // this component should be removed
+  #define COMPONENT_ALWAYS_VISIBLE 0x04 // this component should always be rendererd (regardless of camera position)
 
   #define GRAVITY_PER_TICK 2
 

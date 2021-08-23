@@ -23,7 +23,7 @@ namespace tilemap {
                       int solid_idx)
     : component_t({0,0,0,0}, COMPONENT_COLLIDABLE
                            | COMPONENT_SOLID
-                           | COMPONENT_VISIBLE),
+                           | COMPONENT_ALWAYS_VISIBLE),
       map_path(map_path),
       tileset(tileset),
       layers(layers),
@@ -42,7 +42,7 @@ namespace tilemap {
         std::make_unique<layer_t>(map_path,
                                   tileset,
                                   layers.at(i),
-                                  i==solid_idx));
+                                  (int)i==solid_idx));
     }
 
     //load child resources

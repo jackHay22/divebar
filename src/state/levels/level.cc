@@ -14,7 +14,7 @@ namespace levels {
    * Default constructor
    */
   level_t::level_t()
-    : common::component_t({0,0,0,0}, COMPONENT_VISIBLE),
+    : common::component_t({0,0,0,0}, COMPONENT_ALWAYS_VISIBLE),
       level_camera({0,0,window::LOGICAL_W_PX,window::LOGICAL_H_PX}) {}
 
   /**

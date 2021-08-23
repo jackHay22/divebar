@@ -71,8 +71,8 @@ namespace tilemap {
     : common::component_t({0,0,0,0},
                           solid ? (COMPONENT_COLLIDABLE
                                  | COMPONENT_SOLID
-                                 | COMPONENT_VISIBLE) :
-                                  COMPONENT_VISIBLE),
+                                 | COMPONENT_ALWAYS_VISIBLE) :
+                                  COMPONENT_ALWAYS_VISIBLE),
       path(path),
       tileset(tileset),
       idx(idx),
@@ -173,21 +173,24 @@ namespace tilemap {
          std::string substr;
          std::getline(s_stream, substr, COMMA);
 
-         //attempt to parse value
-         try {
-           int type = std::stoi(substr);
+         if (!substr.empty()) {
+           //attempt to parse value
+           try {
+             int type = std::stoi(substr);
 
-           if (type != -1) {
-             //add the tile to the map contents
-             this->contents.back().push_back(type);
-           } else {
-             this->contents.back().push_back(-1);
+             if (type != -1) {
+               //add the tile to the map contents
+               this->contents.back().push_back(type);
+             } else {
+               this->contents.back().push_back(-1);
+             }
+
+           } catch (...) {
+             throw common::launch_exception("failed to read from map file: " +
+              path + ", layer " + std::to_string(idx));
            }
-
-         } catch (...) {
-           throw common::launch_exception("failed to read from map file: " + path + ", layer " + std::to_string(idx));
+           x++;
          }
-         x++;
       }
       y++;
     }
@@ -230,11 +233,13 @@ namespace tilemap {
       }
 
     } catch (...) {
-      throw common::launch_exception("failed to read from map file: " + path + ", layer " + std::to_string(idx));
+      throw common::launch_exception("failed to read from map file: " +
+        path + ", layer " + std::to_string(idx));
     }
 
     if (contents.empty()) {
-      throw common::launch_exception("failed to read from map file: " + path + ", layer " + std::to_string(idx) + " (nothing loaded)");
+      throw common::launch_exception("failed to read from map file: " +
+        path + ", layer " + std::to_string(idx) + " (nothing loaded)");
     }
   }
 
@@ -243,11 +248,44 @@ namespace tilemap {
    */
   void layer_t::render(SDL_Renderer& renderer,
                        const SDL_Rect& camera) const {
+    //create a virtual tile to compare with the other body
+    virtual_tile_t current_tile(tile_dim);
+    SDL_Rect sample_bounds = {0,0,tile_dim,tile_dim};
+    SDL_Rect render_bounds = {0,0,tile_dim,tile_dim};
+
+    //get the image dimensions
+    const SDL_Rect& tileset_dim = tileset->default_bounds();
+    int tiles_per_row = tileset_dim.w / tile_dim;
+
     //render tiles in layer
     for (size_t i=0; i<contents.size(); i++) {
       for (size_t j=0; j<contents.at(i).size(); j++) {
+        //the index of the current tile
+        int tile_idx = contents.at(i).at(j);
 
-        //TODO render visible tiles
+        //check if tile visible at all
+        if (tile_idx > -1) {
+          //set position of collision body
+          current_tile.move_to(j * tile_dim, i * tile_dim);
+
+          //set the sample region within the tileset
+          sample_bounds.x = tile_dim * (tile_idx % tiles_per_row);
+          sample_bounds.y = tile_dim * (tile_idx / tiles_per_row);
+
+          //set the position to render the tileset sample
+          render_bounds.x = tile_dim * j;
+          render_bounds.y = tile_dim * i;
+
+          //check if visible to camera
+          if (current_tile.is_visible(camera)) {
+            //render using tileset
+            this->tileset->render_copy(
+              renderer,
+              sample_bounds,
+              render_bounds
+            );
+          }
+        }
       }
     }
   }

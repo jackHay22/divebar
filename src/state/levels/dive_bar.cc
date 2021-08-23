@@ -14,8 +14,12 @@ namespace levels {
 
   /**
    * Default constructor
+   * @param player_anim_sheet the shared animations user by the player
+   * (Since the player can move between levels we share the image resource)
    */
-  dive_bar_t::dive_bar_t() : level_t() {}
+  dive_bar_t::dive_bar_t(std::shared_ptr<common::image_t> player_anim_sheet)
+    : level_t(),
+      player_anim_sheet(player_anim_sheet) {}
 
   /**
    * Load any resources for this component
@@ -28,13 +32,13 @@ namespace levels {
     std::shared_ptr<common::image_t> tileset =
       std::make_shared<common::image_t>(
         renderer,
-        this->rsrc_path("tilesets/divebar.png")
+        this->rsrc_path("tilesets/bar.png")
       );
 
     //add background map layers
     this->add_child(std::make_unique<tilemap::tilemap_t>(
-      this->rsrc_path("maps/divebar.txt"),
-      tileset, std::vector<int>{2,3,4},
+      this->rsrc_path("maps/bar.txt"),
+      tileset, std::vector<int>{0,1,2},
       -1
     ));
 
@@ -43,10 +47,13 @@ namespace levels {
 
     //load the foreground map layers (includes ground)
     this->add_child(std::make_unique<tilemap::tilemap_t>(
-      this->rsrc_path("maps/divebar.txt"),
-      tileset, std::vector<int>{0,1},
-      1 // second layer is solid
+      this->rsrc_path("maps/bar.txt"),
+      tileset, std::vector<int>{3,4},
+      0 // index of solid layer
     ));
+
+    //load children
+    component_t::load_children(renderer);
   }
 
   /**
