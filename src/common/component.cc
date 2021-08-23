@@ -202,7 +202,8 @@ namespace common {
   void component_t::render_child(SDL_Renderer& renderer,
                                  const SDL_Rect& camera,
                                  size_t idx) const {
-    if (children.at(idx)->is_visible(camera)) {
+    if ((children.at(idx)->flags & COMPONENT_ALWAYS_VISIBLE) ||
+        children.at(idx)->is_visible(camera)) {
       children.at(idx)->render(renderer,camera);
     }
   }

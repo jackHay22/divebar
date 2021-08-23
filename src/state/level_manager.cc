@@ -14,7 +14,7 @@ namespace state {
    * Manage different levels
    */
   level_manager_t::level_manager_t()
-    : common::component_t({0,0,0,0},COMPONENT_VISIBLE),
+    : common::component_t({0,0,0,0},COMPONENT_ALWAYS_VISIBLE),
       current_map_location(0) {}
 
   /**
