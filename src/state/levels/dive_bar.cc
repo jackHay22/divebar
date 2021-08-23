@@ -45,14 +45,14 @@ namespace levels {
 
     //load the player
     this->add_child(std::make_unique<entity::player_t>(
-      SDL_Rect{16,16,8,24},
+      SDL_Rect{24,16,8,24},
       player_anim_sheet
     ));
 
     //load the foreground map layers (includes ground)
     this->add_child(std::make_unique<tilemap::tilemap_t>(
       this->rsrc_path("maps/bar.txt"),
-      tileset, std::vector<int>{3}, //4
+      tileset, std::vector<int>{3,4},
       0 // index of solid layer
     ));
 

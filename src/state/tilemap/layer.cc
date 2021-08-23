@@ -109,8 +109,8 @@ namespace tilemap {
       virtual_tile_t current_tile(tile_dim);
 
       //generate positions that might intersect
-      for (int i=(other_bounds.x - tile_dim); i<(other_bounds.x + tile_dim); i+=(tile_dim / 2)) {
-        for (int j=(other_bounds.y - tile_dim); j<(other_bounds.y + tile_dim); j+=(tile_dim / 2)) {
+      for (int i=(other_bounds.x - tile_dim); i<((other_bounds.x + other_bounds.w) + tile_dim); i+=(tile_dim / 2)) {
+        for (int j=(other_bounds.y - tile_dim); j<((other_bounds.y + other_bounds.h) + tile_dim); j+=(tile_dim / 2)) {
           //check if the generated position is in bounds
           if (in_bounds(i,j)) {
             //determine indices of tile

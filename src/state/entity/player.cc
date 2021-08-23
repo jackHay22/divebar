@@ -38,7 +38,7 @@ namespace entity {
       std::make_unique<actions::idle_t>(
         //the idle animation
         std::make_unique<common::anim_t>(
-          anim_sheet, 32,48, 0, 12, 2
+          anim_sheet, 32,48, 0, 12, 3
         )
       )
     );
