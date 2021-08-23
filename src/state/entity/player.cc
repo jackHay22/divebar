@@ -38,11 +38,7 @@ namespace entity {
       std::make_unique<actions::idle_t>(
         //the idle animation
         std::make_unique<common::anim_t>(
-          anim_sheet,
-          0,0, //TODO frame dimensions
-          0, //TODO row in sheet
-          0, //TODO number of frames
-          0 //TODO frame delay
+          anim_sheet, 32,48, 0, 12, 3
         )
       )
     );
@@ -51,19 +47,11 @@ namespace entity {
       std::make_unique<actions::walking_t>(
         //the walking flat animation
         std::make_unique<common::anim_t>(
-          anim_sheet,
-          0,0, //TODO frame dimensions
-          0, //TODO row in sheet
-          0, //TODO number of frames
-          0 //TODO frame delay
+          anim_sheet, 32,48, 1, 8, 2
         ),
         //the walking up animation
         std::make_unique<common::anim_t>(
-          anim_sheet,
-          0,0, //TODO frame dimensions
-          0, //TODO row in sheet
-          0, //TODO number of frames
-          0 //TODO frame delay
+          anim_sheet, 32,48, 2, 11, 2
         )
       )
     );

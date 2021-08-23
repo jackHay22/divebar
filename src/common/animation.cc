@@ -5,6 +5,7 @@
  */
 
 #include "animation.h"
+#include <iostream>
 
 namespace common {
 
@@ -84,11 +85,11 @@ namespace common {
       this->current_frame = (this->current_frame + 1) % this->frames;
     }
 
-    //set position based on parent
+    //set position based on parent and own size
     const SDL_Rect& parent_pos = parent.get_bounds();
     const SDL_Rect& current_pos = this->get_bounds();
 
-    //center the animation
+    //match the parent position
     this->set_position(parent_pos.x + (parent_pos.w / 2) - (current_pos.w / 2),
                        parent_pos.y + (parent_pos.h / 2) - (current_pos.h / 2));
   }
@@ -103,12 +104,12 @@ namespace common {
     //location to sample in sprite sheet
     SDL_Rect sample_bounds = {(int)(current_frame * frame_width),
                               (int)(row_idx * frame_height),
-                              frame_width,
-                              frame_height};
+                              frame_width, frame_height};
 
     const SDL_Rect& current_bounds = this->get_bounds();
 
-    //set the position to render the animation frame
+    //set the position to render the animation frame,
+    //adjust by camera and by image size
     SDL_Rect render_bounds = {current_bounds.x - camera.x,
                               current_bounds.y - camera.y,
                               frame_width, frame_height};

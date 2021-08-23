@@ -156,6 +156,14 @@ namespace common {
     virtual void load(SDL_Renderer& renderer,
                       const component_t& parent) = 0;
 
+    /**
+     * Render the bounds of this component for debugging
+     * @param renderer the sdl renderer
+     * @param camera   the camera to render with
+     */
+    void debug_render_bounds(SDL_Renderer& renderer,
+                             const SDL_Rect& camera) const;
+
   public:
     /**
      * Constructor

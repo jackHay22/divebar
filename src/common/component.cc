@@ -231,6 +231,23 @@ namespace common {
   }
 
   /**
+   * Render the bounds of this component for debugging
+   * @param renderer the sdl renderer
+   * @param camera   the camera to render with
+   */
+  void component_t::debug_render_bounds(SDL_Renderer& renderer,
+                                        const SDL_Rect& camera) const {
+    //current bounds (corrected by camera view)
+    SDL_Rect render_bounds = {bounds.x - camera.x,
+                              bounds.y - camera.y,
+                              bounds.w, bounds.h};
+    //set the draw color
+    SDL_SetRenderDrawColor(&renderer,0,255,0,127);
+    //render the bounds
+    SDL_RenderDrawRect(&renderer,&render_bounds);
+  }
+
+  /**
    * Whether this component is currently visible to the camera
    * @return whether the component is visible
    * @param camera the current camera
