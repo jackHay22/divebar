@@ -10,6 +10,7 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 #include "../../common/component.h"
+#include "../../common/image.h"
 #include "level.h"
 
 namespace state {
@@ -20,6 +21,8 @@ namespace levels {
    */
   class dive_bar_t : public level_t {
   private:
+    //Since the player can move between levels we share the image resource
+    std::shared_ptr<common::image_t> player_anim_sheet;
 
     /**
      * Load any resources for this component
@@ -45,8 +48,10 @@ namespace levels {
   public:
     /**
      * Default constructor
+     * @param player_anim_sheet the shared animations user by the player
+     * (Since the player can move between levels we share the image resource)
      */
-    dive_bar_t();
+    dive_bar_t(std::shared_ptr<common::image_t> player_anim_sheet);
     dive_bar_t(const dive_bar_t&) = delete;
     dive_bar_t& operator=(const dive_bar_t&) = delete;
   };

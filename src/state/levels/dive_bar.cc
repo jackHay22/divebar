@@ -14,8 +14,12 @@ namespace levels {
 
   /**
    * Default constructor
+   * @param player_anim_sheet the shared animations user by the player
+   * (Since the player can move between levels we share the image resource)
    */
-  dive_bar_t::dive_bar_t() : level_t() {}
+  dive_bar_t::dive_bar_t(std::shared_ptr<common::image_t> player_anim_sheet)
+    : level_t(),
+      player_anim_sheet(player_anim_sheet) {}
 
   /**
    * Load any resources for this component

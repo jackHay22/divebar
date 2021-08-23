@@ -7,6 +7,7 @@
 #include "level_manager.h"
 #include <memory>
 #include "levels/dive_bar.h"
+#include "../common/image.h"
 
 namespace state {
 
@@ -24,8 +25,14 @@ namespace state {
    */
   void level_manager_t::load(SDL_Renderer& renderer,
                              const common::component_t& parent) {
+    //the shared player animations for all level areas
+    std::shared_ptr<common::image_t> player_anim =
+      std::make_shared<common::image_t>(
+        renderer, this->rsrc_path("animations/player.png")
+      );
+
     //load the different map regions
-    this->add_child(std::make_unique<levels::dive_bar_t>());
+    this->add_child(std::make_unique<levels::dive_bar_t>(player_anim));
 
     //load child resources
     component_t::load_children(renderer);

@@ -31,7 +31,9 @@ namespace actions {
    * @param parent   the parent of this component
    */
   void walking_t::load(SDL_Renderer& renderer,
-                       const common::component_t& parent) {}
+                       const common::component_t& parent) {
+    component_t::load_children(renderer);
+  }
 
   /**
    * Update the state

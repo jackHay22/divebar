@@ -21,8 +21,6 @@ namespace entity {
    */
   class entity_t : public common::component_t {
   private:
-    //the current action of the entity
-    size_t current;
     //the health of the entity
     int health;
     //whether the entity is facing left
@@ -38,6 +36,10 @@ namespace entity {
      */
     void render(SDL_Renderer& renderer,
                 const SDL_Rect& camera) const override;
+
+  protected:
+    //the current action of the entity
+    size_t current_action;
 
   public:
     /**
