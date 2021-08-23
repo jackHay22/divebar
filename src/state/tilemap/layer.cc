@@ -222,12 +222,13 @@ namespace tilemap {
             this->tile_dim = parse_labeled_number(line);
 
           } else if (startswith(line,LAYER)) {
+            //get the current layer number
             layer = parse_labeled_number(line);
-
-          } else if (layer == (int)this->idx) {
-            //parse this layer
-            parse_map_lines(layer_file,max_height);
-            return; //done
+            if (layer == (int)this->idx) {
+              //parse this layer
+              parse_map_lines(layer_file,max_height);
+              return; //done
+            }
           }
         }
       }

@@ -6,6 +6,7 @@
 
 #include "dive_bar.h"
 #include "../tilemap/tilemap.h"
+#include "../entity/player.h"
 #include "../../common/image.h"
 #include "../../window/window.h"
 
@@ -42,13 +43,16 @@ namespace levels {
       -1
     ));
 
-    //load entities
-
+    //load the player
+    this->add_child(std::make_unique<entity::player_t>(
+      SDL_Rect{16,16,8,24},
+      player_anim_sheet
+    ));
 
     //load the foreground map layers (includes ground)
     this->add_child(std::make_unique<tilemap::tilemap_t>(
       this->rsrc_path("maps/bar.txt"),
-      tileset, std::vector<int>{3,4},
+      tileset, std::vector<int>{3}, //4
       0 // index of solid layer
     ));
 

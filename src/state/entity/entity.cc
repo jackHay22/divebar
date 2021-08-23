@@ -35,6 +35,8 @@ namespace entity {
    */
   void entity_t::render(SDL_Renderer& renderer,
                         const SDL_Rect& camera) const {
+    //TEMP
+    debug_render_bounds(renderer,camera);
     //render the current action child
     common::component_t::render_child(renderer,
                                       camera,
