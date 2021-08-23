@@ -72,6 +72,9 @@ namespace entity {
       //clear
       next_action = -1;
     }
+
+    //TODO if not on solid ground switch action
+
     //update the current action
     common::component_t::update_child(current_action);
   }

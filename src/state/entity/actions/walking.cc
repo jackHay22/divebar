@@ -6,6 +6,7 @@
 
 #include "walking.h"
 #include "../entity.h"
+#include <iostream>
 
 namespace state {
 namespace entity {
@@ -19,7 +20,9 @@ namespace actions {
   walking_t::walking_t(std::unique_ptr<common::anim_t> flat_anim,
                        std::unique_ptr<common::anim_t> up_anim)
     : action_t(),
-      walking_up(false) {
+      walking_up(false),
+      walking_up_frames_rem(0),
+      walking_up_frames_total(0) {
     //add the animations as children of this component
     this->add_child(std::move(flat_anim));
     this->add_child(std::move(up_anim));
@@ -33,32 +36,24 @@ namespace actions {
   void walking_t::load(SDL_Renderer& renderer,
                        const common::component_t& parent) {
     component_t::load_children(renderer);
+
+    //set size based on parent size
+    const SDL_Rect& current_position = parent.get_bounds();
+    this->set_size(current_position.w,current_position.h);
+
+    //determine the length of the walking up animation
+    walking_up_frames_total = this->get_nth_child<common::anim_t>(1).get_cycle_duration();
   }
 
   /**
    * Update the state
    */
   void walking_t::update(common::component_t& parent) {
-    //lock the action if walking up (action can be preempted if not walking up)
-    this->set_completed(!walking_up);
-
     //check whether the parent is facing left
     bool facing_left = parent.get_as<entity_t>().facing_left();
-    //change in x based on direction
-    int dx = 1 + (-2 * facing_left);
 
     //get the current position of the entity
     const SDL_Rect& current_position = parent.get_bounds();
-
-    //inherit the parents bounds and position based on dx
-    this->set_position(current_position.x + dx, current_position.y);
-    this->set_size(current_position.w,current_position.h);
-
-    //update the parent's position based on change in x
-    parent.set_position(current_position.x + dx, current_position.y);
-
-    //update the current animation
-    common::component_t::update_child(walking_up ? 1 : 0);
 
     //update the animation direction
     this->get_nth_child<common::anim_t>(walking_up ? 1 : 0).set_flipped(
@@ -66,12 +61,66 @@ namespace actions {
       facing_left
     );
 
-    //get the level to check if the entity can walk up something
-    component_t *grandparent;
-    if (parent.get_parent(&grandparent)) {
-      //probe to see if the entity can walk up
+    if (walking_up) {
+      walking_up_frames_rem--;
+      //check if completed
+      if (walking_up_frames_rem <= 0) {
+        walking_up = false;
+        //move the player up
+        this->set_position(current_position.x + 8, current_position.y - 8);
+        parent.set_position(current_position.x + 8, current_position.y - 8);
+      }
 
+    } else {
+      //probe for opportunity to walk up
+      //get the level to check if the entity can walk up something
+      component_t *grandparent;
+      if (parent.get_parent(&grandparent)) {
+
+        //x position to probe for based on direction facing
+        int x_probe = facing_left ?
+                        (current_position.x - 1) :
+                        (current_position.x + current_position.w + 1);
+
+        //solid in front of player
+        bool solid_infront = grandparent->solid_at(
+          x_probe,
+          current_position.y + current_position.h - 1
+        );
+
+        //check for space above
+        bool solid_above = grandparent->solid_at(
+          x_probe,
+          current_position.y + current_position.h - 9
+        );
+
+        //set the walking up flag
+        walking_up = solid_infront && !solid_above;
+        //set the remaining frames
+        walking_up_frames_rem = walking_up_frames_total - 1;
+
+        //reset the walk up animation
+        this->get_nth_child<common::anim_t>(1).reset_animation();
+      }
     }
+
+    //if player not walking up, move forward
+    if (!walking_up) {
+      //change in x based on direction
+      int dx = 1 + (-2 * facing_left);
+
+      //inherit the parents bounds and position based on dx
+      this->set_position(current_position.x + dx, current_position.y);
+
+      //update the parent's position based on change in x
+      parent.set_position(current_position.x + dx, current_position.y);
+    }
+
+    //lock the action if walking up (action can be preempted if not walking up)
+    this->set_completed(!walking_up);
+
+    //update the current animation
+    common::component_t::update_child(walking_up ? 1 : 0);
   }
 
   /**

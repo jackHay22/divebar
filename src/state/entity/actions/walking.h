@@ -26,6 +26,10 @@ namespace actions {
   private:
     //whether this entity is walking up
     bool walking_up;
+    //walking up frames remaining
+    int walking_up_frames_rem;
+    //the total number of frames for walk up cycle
+    int walking_up_frames_total;
 
     /**
      * Load any resources for this component

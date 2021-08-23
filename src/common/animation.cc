@@ -125,4 +125,20 @@ namespace common {
   void anim_t::set_flipped(bool flipped) {
     this->flipped = flipped;
   }
+
+  /**
+   * Get the duration of the animation un update cycles
+   * @return duration
+   */
+  int anim_t::get_cycle_duration() const {
+    return frames * frame_delay;
+  }
+
+  /**
+   * Reset the animation
+   */
+  void anim_t::reset_animation() {
+    this->frame_delay_counter = this->frame_delay;
+    this->current_frame = 0;
+  }
 }

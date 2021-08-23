@@ -98,6 +98,17 @@ namespace common {
      * @param  flipped flip the animation
      */
     void set_flipped(bool flipped=true);
+
+    /**
+     * Get the duration of the animation un update cycles
+     * @return duration
+     */
+    int get_cycle_duration() const;
+
+    /**
+     * Reset the animation
+     */
+    void reset_animation();
   };
 }
 
