@@ -59,6 +59,12 @@ namespace entity {
              std::shared_ptr<common::image_t> anim_sheet);
     player_t(const player_t&) = delete;
     player_t& operator=(const player_t&) = delete;
+
+    /**
+     * Whether this entity controls the camera
+     * @return false by default
+     */
+    bool controls_camera() const { return true; }
   };
 
 }}

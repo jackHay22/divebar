@@ -122,17 +122,22 @@ namespace actions {
       //check if completed
       if (climbing_anim.anim_complete()) {
         walking_up = false;
-        //the new x position
-        int new_x = facing_left ? (current_position.x - 8) : (current_position.x + 8);
 
-        grandparent->get_as<levels::level_t>().center_camera(
-          new_x,
+        //this mutates current_position
+        parent.set_position(
+          facing_left ? (current_position.x - 8) : (current_position.x + 8),
           current_position.y - 8
         );
 
-        //move the player up
-        this->set_position(new_x, current_position.y - 8);
-        parent.set_position(new_x, current_position.y - 8);
+        if (parent.get_as<entity_t>().controls_camera()) {
+          grandparent->get_as<levels::level_t>().center_camera(
+            current_position.x,
+            current_position.y
+          );
+        }
+
+        //move the action position to match
+        this->set_position(current_position.x, current_position.y);
 
       } else {
         //TODO only do this for the player
@@ -141,11 +146,13 @@ namespace actions {
         float progress = 1.0f - ((float) climbing_anim.cycle_duration_remaining() /
                                  (float) climbing_anim.get_cycle_duration());
 
-        //ease the camera
-        grandparent->get_as<levels::level_t>().center_camera(
-          current_position.x + (int)(dx * progress),
-          current_position.y - (int)(8 * progress)
-        );
+        if (parent.get_as<entity_t>().controls_camera()) {
+          //ease the camera
+          grandparent->get_as<levels::level_t>().center_camera(
+            current_position.x + (int)(dx * progress),
+            current_position.y - (int)(8 * progress)
+          );
+        }
       }
     }
   }

@@ -68,6 +68,12 @@ namespace entity {
      * @param diff value to add to health
      */
     void update_health(int diff);
+
+    /**
+     * Whether this entity controls the camera
+     * @return false by default
+     */
+    virtual bool controls_camera() const { return false; }
   };
 
 }}
