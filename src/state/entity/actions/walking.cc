@@ -123,10 +123,12 @@ namespace actions {
       if (walking_up_frames_rem <= 0) {
         walking_up = false;
         //the new x position
-        int new_x = facing_left ? (current_position.x - 7) : (current_position.x + 7);
+        int new_x = facing_left ? (current_position.x - 8) : (current_position.x + 8);
         //move the player up
         this->set_position(new_x, current_position.y - 8);
         parent.set_position(new_x, current_position.y - 8);
+
+        //TODO only do for player
 
         //update the camera position
         grandparent->get_as<levels::level_t>().center_camera(
@@ -134,7 +136,10 @@ namespace actions {
         );
 
       } else {
-        int dx = facing_left ? -7 : 7;
+
+        //TODO only do this for the player
+
+        int dx = facing_left ? -8 : 8;
         float progress = 1.0f - ((float) walking_up_frames_rem / (float) walking_up_frames_total);
         //ease the camera
         grandparent->get_as<levels::level_t>().center_camera(

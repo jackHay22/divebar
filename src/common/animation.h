@@ -39,6 +39,8 @@ namespace common {
 
     //whether the image is flipped
     bool flipped;
+    //play the animation once, pause until reset
+    bool once;
 
     /**
      * Update the animation
@@ -74,13 +76,15 @@ namespace common {
      * @param row_idx     the row index on the sprite sheet
      * @param frames the number of frames (horizontal)
      * @param frame_delay ticks between frame updates
+     * @param once        play the animation once until reset
      */
     anim_t(std::shared_ptr<image_t> image,
            size_t frame_width,
            size_t frame_height,
            size_t row_idx,
            size_t frames,
-           size_t frame_delay);
+           size_t frame_delay,
+           bool once=false);
 
     /**
      * Copy constructor

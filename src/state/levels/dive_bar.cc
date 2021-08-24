@@ -7,11 +7,14 @@
 #include "dive_bar.h"
 #include "../tilemap/tilemap.h"
 #include "../entity/player.h"
+#include "../entity/pool_player.h"
 #include "../../common/image.h"
 #include "../../window/window.h"
 
 namespace state {
 namespace levels {
+
+  #define PLAYER_IDX 2
 
   /**
    * Default constructor
@@ -43,9 +46,14 @@ namespace levels {
       -1
     ));
 
+    //add the pool player
+    this->add_child(std::make_unique<entity::pool_player_t>(
+      44,40
+    ));
+
     //load the player
     this->add_child(std::make_unique<entity::player_t>(
-      SDL_Rect{24,16,8,24},
+      SDL_Rect{160,80,8,24},
       player_anim_sheet
     ));
 
@@ -60,7 +68,7 @@ namespace levels {
     component_t::load_children(renderer);
 
     //tilemap now loaded, get dimensions
-    const tilemap::tilemap_t& solid_layer = get_nth_child<tilemap::tilemap_t>(2);
+    const tilemap::tilemap_t& solid_layer = get_nth_child<tilemap::tilemap_t>(3);
     //set the max bounds for camera lock
     this->set_max_bounds(solid_layer.get_map_width(), solid_layer.get_map_height());
   }
@@ -70,7 +78,7 @@ namespace levels {
    */
   void dive_bar_t::update(common::component_t& parent) {
     //get the player position
-    const SDL_Rect& player_bounds = this->get_nth_child(1).get_bounds();
+    const SDL_Rect& player_bounds = this->get_nth_child(PLAYER_IDX).get_bounds();
 
     //center the camera
     this->center_camera(player_bounds.x, player_bounds.y);

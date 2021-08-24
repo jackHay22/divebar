@@ -17,13 +17,15 @@ namespace common {
    * @param row_idx the row index on the sprite sheet
    * @param frames the number of frames (horizontal)
    * @param frame_delay ticks between frame updates
+   * @param once        play the animation once until reset
    */
   anim_t::anim_t(std::shared_ptr<image_t> image,
                  size_t frame_width,
                  size_t frame_height,
                  size_t row_idx,
                  size_t frames,
-                 size_t frame_delay)
+                 size_t frame_delay,
+                 bool once)
     : component_t({0,0,(int)frame_width,(int)frame_height},COMPONENT_VISIBLE),
       image(image),
       frame_width(frame_width),
@@ -33,7 +35,8 @@ namespace common {
       current_frame(0),
       frame_delay(frame_delay),
       frame_delay_counter(frame_delay),
-      flipped(false) {}
+      flipped(false),
+      once(once) {}
 
   /**
    * Copy constructor
@@ -49,7 +52,8 @@ namespace common {
       current_frame(other.frames),
       frame_delay(other.frame_delay),
       frame_delay_counter(other.frame_delay_counter),
-      flipped(other.flipped) {}
+      flipped(other.flipped),
+      once(other.once) {}
 
   /**
    * Assignment operator (shares image)
@@ -65,6 +69,7 @@ namespace common {
     this->frame_delay = other.frame_delay;
     this->frame_delay_counter = other.frame_delay_counter;
     this->flipped = other.flipped;
+    this->once = other.once;
     return *this;
   }
 
@@ -82,7 +87,10 @@ namespace common {
     this->frame_delay_counter--;
     if (this->frame_delay_counter == 0) {
       this->frame_delay_counter = this->frame_delay;
-      this->current_frame = (this->current_frame + 1) % this->frames;
+
+      if (!once || (current_frame < (frames - 1))) {
+        this->current_frame = (this->current_frame + 1) % this->frames;
+      }
     }
 
     //set position based on parent and own size

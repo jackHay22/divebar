@@ -53,7 +53,7 @@ namespace entity {
         ),
         //the walking up animation
         std::make_unique<common::anim_t>(
-          anim_sheet, 32,48, 2, 11, 2
+          anim_sheet, 32,48, 2, 11, 2, true
         )
       )
     );
