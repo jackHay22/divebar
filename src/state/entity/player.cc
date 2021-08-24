@@ -25,7 +25,8 @@ namespace entity {
                      std::shared_ptr<common::image_t> anim_sheet)
     : entity_t(position,100),
       anim_sheet(anim_sheet),
-      next_action(-1) {}
+      next_action(-1),
+      next_direction(false) {}
 
   /**
    * Load actions for the player
@@ -69,6 +70,7 @@ namespace entity {
 
     if ((next_action != -1) && action.action_completed()) {
       current_action = next_action;
+      left = next_direction;
       //clear
       next_action = -1;
     }
@@ -90,11 +92,11 @@ namespace entity {
       switch (e.key.keysym.sym) {
         case SDLK_a:
           next_action = ACTION_WALKING;
-          left = true;
+          next_direction = true;
           break;
         case SDLK_d:
           next_action = ACTION_WALKING;
-          left = false;
+          next_direction = false;
           break;
       }
 

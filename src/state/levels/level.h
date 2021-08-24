@@ -33,13 +33,6 @@ namespace levels {
                 const SDL_Rect& camera) const override;
 
     /**
-     * Center the camera at some position
-     * @param x position x
-     * @param y position y
-     */
-    void center_camera(int x, int y);
-
-    /**
      * Set the max dimensions of the level
      * @param max_width  the max level width
      * @param max_height the max level height
@@ -53,6 +46,13 @@ namespace levels {
     level_t();
     level_t(const level_t&) = delete;
     level_t& operator=(const level_t&) = delete;
+
+    /**
+     * Center the camera at some position
+     * @param x position x
+     * @param y position y
+     */
+    void center_camera(int x, int y);
 
   };
 

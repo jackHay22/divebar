@@ -25,6 +25,8 @@ namespace entity {
     std::shared_ptr<common::image_t> anim_sheet;
     //the action to switch to once the current one is finished (or -1)
     int next_action;
+    //the next direction
+    bool next_direction;
 
     /**
      * Load actions for the player

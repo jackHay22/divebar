@@ -40,6 +40,20 @@ namespace actions {
               const common::component_t& parent) override;
 
     /**
+     * Update if walking
+     * @param parent parent component
+     * @param facing_left whether the player is facing left
+     */
+    void walking_update(common::component_t& parent, bool facing_left);
+
+    /**
+     * Update if walking up something
+     * @param parent parent component
+     * @param facing_left whether the player is facing left
+     */
+    void climbing_update(common::component_t& parent, bool facing_left);
+
+    /**
      * Update the state
      */
     void update(common::component_t& parent) override;
