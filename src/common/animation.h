@@ -29,13 +29,13 @@ namespace common {
     size_t row_idx;
 
     //the total number of frames (not necessarily the full row)
-    size_t frames;
+    int frames;
     //the current frame
-    size_t current_frame;
+    int current_frame;
     //the delay in ticks between frames
-    size_t frame_delay;
+    int frame_delay;
     //the current counter for frame delay
-    size_t frame_delay_counter;
+    int frame_delay_counter;
 
     //whether the image is flipped
     bool flipped;
@@ -82,8 +82,8 @@ namespace common {
            size_t frame_width,
            size_t frame_height,
            size_t row_idx,
-           size_t frames,
-           size_t frame_delay,
+           int frames,
+           int frame_delay,
            bool once=false);
 
     /**
@@ -113,6 +113,18 @@ namespace common {
      * Reset the animation
      */
     void reset_animation();
+
+    /**
+     * Whether the current animation cycle is complete
+     * @return whether the cycle is complete
+     */
+    bool anim_complete() const;
+
+    /**
+     * The remaining update cycles in the animation
+     * @return the number of update calls left in the cycle
+     */
+    int cycle_duration_remaining() const;
   };
 }
 

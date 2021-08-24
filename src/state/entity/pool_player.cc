@@ -24,10 +24,8 @@ namespace entity {
    */
   pool_player_t::pool_player_t(int x, int y)
     : entity_t({x,y,ANIM_W,ANIM_H},100),
-      rem_frames(0),
-      shooting_frames_total(0),
-      idle_frames_total(0),
-      prep_frames_total(0) {}
+    idle_updates_rem(0),
+    idle_updates_total(0) {}
 
   /**
    * Load resources for the entity
@@ -68,32 +66,33 @@ namespace entity {
     //load the action resources
     component_t::load_children(renderer);
 
-    //set the total frames for each
-    shooting_frames_total = this->get_nth_child<common::anim_t>(ACTION_SHOOTING).get_cycle_duration();
-    idle_frames_total = this->get_nth_child<common::anim_t>(ACTION_WAITING).get_cycle_duration();
-    prep_frames_total = this->get_nth_child<common::anim_t>(ACTION_PREPARE).get_cycle_duration();
-
-    //calculate the total frames for shooting anim
-    rem_frames = shooting_frames_total;
+    //determine the total cycles per idle
+    idle_updates_total = this->get_nth_child<common::anim_t>(ACTION_WAITING).get_cycle_duration() * 3;
+    idle_updates_rem = idle_updates_total;
   }
 
   /**
    * Update the player
    */
   void pool_player_t::update(common::component_t& parent) {
-    rem_frames--;
+    if (current_action == ACTION_WAITING) {
+      if (idle_updates_rem > 0) {
+        idle_updates_rem--;
+      } else {
+        current_action = ACTION_PREPARE;
+        this->get_nth_child<common::anim_t>(current_action).reset_animation();
+      }
 
-    if (rem_frames < 0) {
+    } else if (this->get_nth_child<common::anim_t>(current_action).anim_complete()) {
+
       if (current_action == ACTION_SHOOTING) {
         current_action = ACTION_WAITING;
-        rem_frames = 3 * idle_frames_total;
-      } else if (current_action == ACTION_WAITING) {
-        current_action = ACTION_PREPARE;
-        rem_frames = prep_frames_total;
+        idle_updates_rem = idle_updates_total;
+
       } else if (current_action == ACTION_PREPARE) {
         current_action = ACTION_SHOOTING;
-        rem_frames = shooting_frames_total;
       }
+
       this->get_nth_child<common::anim_t>(current_action).reset_animation();
     }
 

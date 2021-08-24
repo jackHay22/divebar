@@ -13,6 +13,9 @@ namespace state {
 namespace entity {
 namespace actions {
 
+  #define WALKING_ANIM  0
+  #define CLIMBING_ANIM 1
+
   /**
    * Constructor
    * @param anim the walking animation
@@ -21,9 +24,7 @@ namespace actions {
   walking_t::walking_t(std::unique_ptr<common::anim_t> flat_anim,
                        std::unique_ptr<common::anim_t> up_anim)
     : action_t(),
-      walking_up(false),
-      walking_up_frames_rem(0),
-      walking_up_frames_total(0) {
+      walking_up(false) {
     //add the animations as children of this component
     this->add_child(std::move(flat_anim));
     this->add_child(std::move(up_anim));
@@ -36,14 +37,12 @@ namespace actions {
    */
   void walking_t::load(SDL_Renderer& renderer,
                        const common::component_t& parent) {
+    //load animation resources as necessary
     component_t::load_children(renderer);
 
     //set size based on parent size
     const SDL_Rect& current_position = parent.get_bounds();
     this->set_size(current_position.w,current_position.h);
-
-    //determine the length of the walking up animation
-    walking_up_frames_total = this->get_nth_child<common::anim_t>(1).get_cycle_duration();
   }
 
   /**
@@ -85,11 +84,11 @@ namespace actions {
 
       //set the walking up flag
       walking_up = solid_infront && !solid_above && solid_below;
-      //set the remaining frames
-      walking_up_frames_rem = walking_up_frames_total - 1;
 
-      //reset the walk up animation
-      this->get_nth_child<common::anim_t>(1).reset_animation();
+      if (walking_up) {
+        //reset the walk up animation
+        this->get_nth_child<common::anim_t>(CLIMBING_ANIM).reset_animation();
+      }
     }
 
     //if player not walking up, move forward
@@ -114,33 +113,34 @@ namespace actions {
     //get the current position of the entity
     const SDL_Rect& current_position = parent.get_bounds();
 
-    walking_up_frames_rem--;
+    //get the climbing animation
+    const common::anim_t& climbing_anim = this->get_nth_child<common::anim_t>(1);
 
     //get the level to set the camera
     component_t *grandparent;
     if (parent.get_parent(&grandparent)) {
       //check if completed
-      if (walking_up_frames_rem <= 0) {
+      if (climbing_anim.anim_complete()) {
         walking_up = false;
         //the new x position
         int new_x = facing_left ? (current_position.x - 8) : (current_position.x + 8);
+
+        grandparent->get_as<levels::level_t>().center_camera(
+          new_x,
+          current_position.y - 8
+        );
+
         //move the player up
         this->set_position(new_x, current_position.y - 8);
         parent.set_position(new_x, current_position.y - 8);
 
-        //TODO only do for player
-
-        //update the camera position
-        grandparent->get_as<levels::level_t>().center_camera(
-          new_x, current_position.y - 8
-        );
-
       } else {
-
         //TODO only do this for the player
 
         int dx = facing_left ? -8 : 8;
-        float progress = 1.0f - ((float) walking_up_frames_rem / (float) walking_up_frames_total);
+        float progress = 1.0f - ((float) climbing_anim.cycle_duration_remaining() /
+                                 (float) climbing_anim.get_cycle_duration());
+
         //ease the camera
         grandparent->get_as<levels::level_t>().center_camera(
           current_position.x + (int)(dx * progress),
@@ -157,7 +157,7 @@ namespace actions {
     //check whether the parent is facing left
     bool facing_left = parent.get_as<entity_t>().facing_left();
     //update the animation direction
-    this->get_nth_child<common::anim_t>(walking_up ? 1 : 0).set_flipped(
+    this->get_nth_child<common::anim_t>(walking_up ? CLIMBING_ANIM : WALKING_ANIM).set_flipped(
       //flip the active animation based on the entity direction
       facing_left
     );
@@ -169,11 +169,11 @@ namespace actions {
       walking_update(parent,facing_left);
     }
 
+    //update the current animation
+    common::component_t::update_child(walking_up ? CLIMBING_ANIM : WALKING_ANIM);
+
     //lock the action if walking up (action can be preempted if not walking up)
     this->set_completed(!walking_up);
-
-    //update the current animation
-    common::component_t::update_child(walking_up ? 1 : 0);
   }
 
   /**
@@ -184,7 +184,7 @@ namespace actions {
   void walking_t::render(SDL_Renderer& renderer,
                          const SDL_Rect& camera) const {
     //render the correct animation
-    common::component_t::render_child(renderer,camera,walking_up ? 1 : 0);
+    common::component_t::render_child(renderer,camera,walking_up ? CLIMBING_ANIM : WALKING_ANIM);
   }
 
 }}}

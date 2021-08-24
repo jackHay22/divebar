@@ -21,12 +21,10 @@ namespace entity {
    */
   class pool_player_t : public entity_t {
   private:
-    //the frames left for each animation component
-    int rem_frames;
-    //the total for each
-    int shooting_frames_total;
-    int idle_frames_total;
-    int prep_frames_total;
+    //the total number of idle cycles
+    int idle_updates_rem;
+    //number of idle cycles remaining
+    int idle_updates_total;
 
     /**
      * Load resources for the entity

@@ -5,7 +5,6 @@
  */
 
 #include "animation.h"
-#include <iostream>
 
 namespace common {
 
@@ -23,8 +22,8 @@ namespace common {
                  size_t frame_width,
                  size_t frame_height,
                  size_t row_idx,
-                 size_t frames,
-                 size_t frame_delay,
+                 int frames,
+                 int frame_delay,
                  bool once)
     : component_t({0,0,(int)frame_width,(int)frame_height},COMPONENT_VISIBLE),
       image(image),
@@ -84,11 +83,16 @@ namespace common {
    * @param parent the parent of the animation
    */
   void anim_t::update(component_t& parent) {
-    this->frame_delay_counter--;
-    if (this->frame_delay_counter == 0) {
-      this->frame_delay_counter = this->frame_delay;
+    //update if not single cycle or not on final frame or not at full delay
+    if (!once || (current_frame < (frames - 1)) || (frame_delay_counter > 0)) {
+      //decrement delay counter
+      this->frame_delay_counter--;
 
-      if (!once || (current_frame < (frames - 1))) {
+      //check if frame update needed
+      if ((this->frame_delay_counter <= 0) && (!once || (current_frame < (frames - 1)))) {
+        //reset the delay counter
+        this->frame_delay_counter = this->frame_delay;
+        //update the current frame if not complete or will loop
         this->current_frame = (this->current_frame + 1) % this->frames;
       }
     }
@@ -148,5 +152,22 @@ namespace common {
   void anim_t::reset_animation() {
     this->frame_delay_counter = this->frame_delay;
     this->current_frame = 0;
+  }
+
+  /**
+   * Whether the current animation cycle is complete
+   * @return whether the cycle is complete
+   */
+  bool anim_t::anim_complete() const {
+    return (current_frame == (frames - 1)) &&
+           (frame_delay_counter == 0);
+  }
+
+  /**
+   * The remaining update cycles in the animation
+   * @return the number of update calls left in the cycle
+   */
+  int anim_t::cycle_duration_remaining() const {
+    return frame_delay_counter + (frame_delay * (frames - current_frame - 1));
   }
 }
