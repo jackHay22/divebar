@@ -51,8 +51,8 @@ namespace window {
     //create the window
     this->window = SDL_CreateWindow(
           title.c_str(),
-          SDL_WINDOWPOS_UNDEFINED,
-          SDL_WINDOWPOS_UNDEFINED,
+          SDL_WINDOWPOS_CENTERED,
+          SDL_WINDOWPOS_CENTERED,
           LOGICAL_W_PX * scale,
           LOGICAL_H_PX * scale,
           SDL_WINDOW_SHOWN);
