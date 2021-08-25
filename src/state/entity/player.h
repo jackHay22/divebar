@@ -64,7 +64,7 @@ namespace entity {
      * Whether this entity controls the camera
      * @return false by default
      */
-    bool controls_camera() const { return true; }
+    bool controls_camera() const override { return true; }
   };
 
 }}
