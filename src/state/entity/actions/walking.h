@@ -26,6 +26,8 @@ namespace actions {
   private:
     //whether this entity is walking up
     bool walking_up;
+    //whether this entity is walking down
+    bool walking_down;
 
     /**
      * Load any resources for this component
@@ -50,6 +52,13 @@ namespace actions {
     void climbing_update(common::component_t& parent, bool facing_left);
 
     /**
+     * Update if walking down something
+     * @param parent      the parent component
+     * @param facing_left whether the entity is facing left
+     */
+    void descending_update(common::component_t& parent, bool facing_left);
+
+    /**
      * Update the state
      */
     void update(common::component_t& parent) override;
@@ -65,11 +74,13 @@ namespace actions {
   public:
     /**
      * Constructor
-     * @param anim the walking animation
-     * @param anim the walking up animation
+     * @param flat_anim the walking animation
+     * @param up_anim the walking up animation
+     * @param down_anim the walking down animation
      */
     walking_t(std::unique_ptr<common::anim_t> flat_anim,
-              std::unique_ptr<common::anim_t> up_anim);
+              std::unique_ptr<common::anim_t> up_anim,
+              std::unique_ptr<common::anim_t> down_anim);
     walking_t(const walking_t&) = delete;
     walking_t& operator=(const walking_t&) = delete;
   };
