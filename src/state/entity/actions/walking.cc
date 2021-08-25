@@ -140,8 +140,6 @@ namespace actions {
         this->set_position(current_position.x, current_position.y);
 
       } else {
-        //TODO only do this for the player
-
         int dx = facing_left ? -8 : 8;
         float progress = 1.0f - ((float) climbing_anim.cycle_duration_remaining() /
                                  (float) climbing_anim.get_cycle_duration());
@@ -172,6 +170,10 @@ namespace actions {
     //update based on walking type
     if (walking_up) {
       climbing_update(parent,facing_left);
+      //check if switched
+      if (!walking_up) {
+        walking_update(parent,facing_left);
+      }
     } else {
       walking_update(parent,facing_left);
     }
