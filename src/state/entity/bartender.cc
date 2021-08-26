@@ -27,7 +27,8 @@ namespace entity {
     : entity_t({x,y,ANIM_W,ANIM_H},100),
       working(false),
       idle_cycle_duration(0),
-      rem_idle_cycles(0) {}
+      rem_idle_cycles(0),
+      needs_reset(false) {}
 
   /**
    * Constructor
@@ -44,11 +45,19 @@ namespace entity {
     ) {}
 
   /**
-   * Serve drink interaction triggered by player proximity
+   * Called when the player interacts with this game
    * @param parent the parent
    */
-  void bartender_t::serve_drink::interact(common::component_t& parent) {
+  void bartender_t::serve_drink::interact_entered(common::component_t& parent) {
     parent.get_as<bartender_t>().serve_drink_action();
+  }
+
+  /**
+   * Called when the player leaves the interaction radius
+   * @param parent the parent
+   */
+  void bartender_t::serve_drink::interact_exited(common::component_t& parent) {
+    parent.get_as<bartender_t>().serve_drink_reset();
   }
 
   /**
@@ -134,7 +143,9 @@ namespace entity {
    * Bartender goes to the taps
    */
   void bartender_t::serve_drink_action() {
-    if (!working) {
+    if (!working && !needs_reset) {
+      //player will need to leave to trigger this again
+      needs_reset = true;
       //switch to serving action
       current_action = ACTION_SERVE;
       working = true;
@@ -143,6 +154,13 @@ namespace entity {
       //reset the serving action
       this->get_nth_child<common::anim_t>(current_action).reset_animation();
     }
+  }
+
+  /**
+   * Player left, can reset
+   */
+  void bartender_t::serve_drink_reset() {
+    needs_reset = false;
   }
 
 }}

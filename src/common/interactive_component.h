@@ -72,7 +72,13 @@ namespace common {
      * Called when the player interacts with this component
      * @param parent the parent
      */
-    virtual void interact(component_t& parent) = 0;
+    virtual void interact_entered(component_t& parent) = 0;
+
+    /**
+     * Called when the player leaves the interaction radius
+     * @param parent the parent
+     */
+    virtual void interact_exited(component_t& parent) {}
 
   public:
     /**
