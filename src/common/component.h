@@ -46,12 +46,20 @@ namespace common {
      */
     bool check_child_collisions(size_t idx) const;
 
+    /**
+     * Call update on an interactive components close enough to the provided location
+     * @param center_x the location x
+     * @param center_y the location y
+     */
+    void update_interactive_components(int center_x, int center_y);
+
   protected:
     /**
      * Add a child to this component (assumes ownership)
      * @param c the child
+     * @return the index of the child
      */
-    void add_child(std::unique_ptr<component_t> c);
+    int add_child(std::unique_ptr<component_t> c);
 
     /**
      * Get the nth child, cast to type

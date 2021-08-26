@@ -39,7 +39,7 @@ namespace entity {
       renderer, this->rsrc_path("animations/pool_player.png")
     );
 
-    //add shotting anim
+    //add shooting anim
     this->add_child(
       //shooting anim
       std::make_unique<common::anim_t>(
@@ -63,6 +63,7 @@ namespace entity {
         ACTION_PREPARE, 12, 3, true
       )
     );
+
     //load the action resources
     component_t::load_children(renderer);
 

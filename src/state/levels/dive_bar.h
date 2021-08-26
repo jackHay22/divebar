@@ -24,6 +24,9 @@ namespace levels {
     //Since the player can move between levels we share the image resource
     std::shared_ptr<common::image_t> player_anim_sheet;
 
+    //the index of the player (as a child)
+    int player_idx;
+
     /**
      * Load any resources for this component
      * @param renderer the sdl renderer for loading images

@@ -8,13 +8,13 @@
 #include "../tilemap/tilemap.h"
 #include "../entity/player.h"
 #include "../entity/pool_player.h"
+#include "../entity/bartender.h"
+#include "../minigames/pool.h"
 #include "../../common/image.h"
 #include "../../window/window.h"
 
 namespace state {
 namespace levels {
-
-  #define PLAYER_IDX 2
 
   /**
    * Default constructor
@@ -23,7 +23,8 @@ namespace levels {
    */
   dive_bar_t::dive_bar_t(std::shared_ptr<common::image_t> player_anim_sheet)
     : level_t(),
-      player_anim_sheet(player_anim_sheet) {}
+      player_anim_sheet(player_anim_sheet),
+      player_idx(0) {}
 
   /**
    * Load any resources for this component
@@ -51,24 +52,34 @@ namespace levels {
       44,40
     ));
 
+    //load the bartender
+    this->add_child(std::make_unique<entity::bartender_t>(
+      208, 75
+    ));
+
     //load the player
-    this->add_child(std::make_unique<entity::player_t>(
+    player_idx = this->add_child(std::make_unique<entity::player_t>(
       SDL_Rect{160,80,8,24},
       player_anim_sheet
     ));
 
     //load the foreground map layers (includes ground)
-    this->add_child(std::make_unique<tilemap::tilemap_t>(
+    int fg_idx = this->add_child(std::make_unique<tilemap::tilemap_t>(
       this->rsrc_path("maps/bar.txt"),
       tileset, std::vector<int>{3,4},
       0 // index of solid layer
     ));
 
+    //add the pool minigame trigger
+    // this->add_child(std::make_unique<minigames::pool_game_t>(
+    //   SDL_Rect{60, 50, 0, 0}
+    // ));
+
     //load children
     component_t::load_children(renderer);
 
     //tilemap now loaded, get dimensions
-    const tilemap::tilemap_t& solid_layer = get_nth_child<tilemap::tilemap_t>(3);
+    const tilemap::tilemap_t& solid_layer = get_nth_child<tilemap::tilemap_t>(fg_idx);
     //set the max bounds for camera lock
     this->set_max_bounds(solid_layer.get_map_width(), solid_layer.get_map_height());
   }
@@ -78,7 +89,7 @@ namespace levels {
    */
   void dive_bar_t::update(common::component_t& parent) {
     //get the player position
-    const SDL_Rect& player_bounds = this->get_nth_child(PLAYER_IDX).get_bounds();
+    const SDL_Rect& player_bounds = this->get_nth_child(player_idx).get_bounds();
 
     //center the camera
     this->center_camera(player_bounds.x, player_bounds.y);

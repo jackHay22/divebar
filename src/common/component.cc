@@ -5,6 +5,8 @@
  */
 
 #include "component.h"
+#include "interactive_component.h"
+#include "../state/entity/player.h"
 #ifndef __APPLE__
 #include <filesystem>
 #endif
@@ -75,15 +77,33 @@ namespace common {
   }
 
   /**
+   * Call update on an interactive components close enough to the provided location
+   * @param center_x the location x
+   * @param center_y the location y
+   */
+  void component_t::update_interactive_components(int center_x, int center_y) {
+    for (size_t i=0; i<children.size(); i++) {
+      if (interactive_component_t *c = dynamic_cast<interactive_component_t*>(children.at(i).get())) {
+        c->update_player_distance(*this,center_x,center_y);
+      }
+
+      //recurse down component tree
+      children.at(i)->update_interactive_components(center_x,center_y);
+    }
+  }
+
+  /**
    * Add a child to this component (assumes ownership)
    * @param c the child
+   * @return the index of the child
    */
-  void component_t::add_child(std::unique_ptr<component_t> c) {
+  int component_t::add_child(std::unique_ptr<component_t> c) {
     //set the parent of the child
     c->parent = this;
     //inherit resource location
     c->resource_dir_prefix = this->resource_dir_prefix;
     children.push_back(std::move(c));
+    return children.size() - 1;
   }
 
   /**
@@ -111,9 +131,23 @@ namespace common {
    * Update all child components
    */
   void component_t::update_children() {
+    bool depth_has_player = false;
+    int px = 0;
+    int py = 0;
     //update each in the x direction
     for (size_t i=0; i<children.size(); i++) {
       update_child(i);
+
+      //attempt to cast to player
+      if (state::entity::player_t *p = dynamic_cast<state::entity::player_t*>(children.at(i).get())) {
+        depth_has_player = true;
+        px = p->bounds.x;
+        py = p->bounds.y;
+      }
+    }
+
+    if (depth_has_player) {
+      update_interactive_components(px,py);
     }
   }
 
