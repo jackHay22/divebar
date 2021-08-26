@@ -40,7 +40,7 @@ namespace common {
      * @param camera   the current camera
      */
     void render_fg(SDL_Renderer& renderer,
-                   const SDL_Rect& camera) const;
+                   const SDL_Rect& camera) const override;
 
     friend struct component_t;
 
