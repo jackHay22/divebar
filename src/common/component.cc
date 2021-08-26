@@ -141,8 +141,8 @@ namespace common {
       //attempt to cast to player
       if (state::entity::player_t *p = dynamic_cast<state::entity::player_t*>(children.at(i).get())) {
         depth_has_player = true;
-        px = p->bounds.x;
-        py = p->bounds.y;
+        px = p->bounds.x + (p->bounds.w / 2);
+        py = p->bounds.y + (p->bounds.h / 2);
       }
     }
 

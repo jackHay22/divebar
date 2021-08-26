@@ -32,7 +32,7 @@ namespace minigames {
      * Called when the player interacts with this game
      * @param parent the parent
      */
-    void interact(component_t& parent) override;
+    void interact_entered(component_t& parent) override;
 
   public:
     /**

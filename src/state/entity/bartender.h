@@ -28,6 +28,8 @@ namespace entity {
     int idle_cycle_duration;
     //cool off period after working
     int rem_idle_cycles;
+    //whether the player needs to enter and leave the area
+    bool needs_reset;
 
     //interactive component
     class serve_drink : public common::interactive_component_t {
@@ -36,7 +38,13 @@ namespace entity {
        * Called when the player interacts with this game
        * @param parent the parent
        */
-      void interact(common::component_t& parent) override;
+      void interact_entered(common::component_t& parent) override;
+
+      /**
+       * Called when the player leaves the interaction radius
+       * @param parent the parent
+       */
+      void interact_exited(common::component_t& parent) override;
     public:
 
       /**
@@ -73,6 +81,11 @@ namespace entity {
      * Bartender goes to the taps
      */
     void serve_drink_action();
+
+    /**
+     * Player left, can reset
+     */
+    void serve_drink_reset();
   };
 
 }}

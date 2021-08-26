@@ -76,7 +76,7 @@ namespace common {
   void interactive_component_t::handle_event(component_t& parent,
                                              const SDL_Event& e) {
     if ((e.type == SDL_KEYDOWN) && can_interact && !automatic && (e.key.keysym.sym == code)) {
-      interact(parent);
+      interact_entered(parent);
     }
   }
 
@@ -88,12 +88,19 @@ namespace common {
    */
   void interactive_component_t::update_player_distance(component_t& parent, int x, int y) {
     const SDL_Rect& curr_bounds = this->get_bounds();
+
+    bool prev = can_interact;
     //calculate distance
-    can_interact = radius > sqrt(pow(x - curr_bounds.x, 2) + pow(y - curr_bounds.y, 2));
+    can_interact = radius > sqrt(pow(x - (curr_bounds.x + (curr_bounds.w / 2)), 2) +
+                                 pow(y - (curr_bounds.y + (curr_bounds.h / 2)), 2));
+
+    if (!can_interact && prev) {
+      interact_exited(parent);
+    }
 
     //do interaction if set to automatic
     if (can_interact && automatic) {
-      interact(parent);
+      interact_entered(parent);
     }
   }
 
