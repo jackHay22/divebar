@@ -38,7 +38,7 @@ namespace common {
     void handle_event(component_t& parent,
                       const SDL_Event& e) override;
 
-    friend class component_t;
+    friend struct component_t;
 
     /**
      * The distance from the player
