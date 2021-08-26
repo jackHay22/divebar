@@ -39,7 +39,6 @@ namespace entity {
       position,
       COMPONENT_ALWAYS_VISIBLE,
       SDLK_e, //unused
-      "",
       16,
       true
     ) {}
@@ -61,12 +60,14 @@ namespace entity {
   }
 
   /**
-   * Load resources for the entity
+   * Load any resources for this component
    * @param renderer the sdl renderer for loading images
    * @param parent   the parent of this component
+   * @param resources the shared global resources
    */
   void bartender_t::load(SDL_Renderer& renderer,
-                         const component_t& parent) {
+                         const common::component_t& parent,
+                         common::shared_resources& resources) {
 
     //load the animation sheet
     std::shared_ptr<common::image_t> anim_sheet =
@@ -109,7 +110,7 @@ namespace entity {
     rem_idle_cycles = idle_cycle_duration * IDLE_CYCLES;
 
     //load the action resources
-    component_t::load_children(renderer);
+    component_t::load_children(renderer,resources);
   }
 
   /**

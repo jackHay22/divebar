@@ -39,11 +39,13 @@ namespace actions {
    * Load any resources for this component
    * @param renderer the sdl renderer for loading images
    * @param parent   the parent of this component
+   * @param resources the shared global resources
    */
   void walking_t::load(SDL_Renderer& renderer,
-                       const common::component_t& parent) {
+                       const common::component_t& parent,
+                       common::shared_resources& resources) {
     //load animation resources as necessary
-    component_t::load_children(renderer);
+    component_t::load_children(renderer,resources);
 
     //set size based on parent size
     const SDL_Rect& current_position = parent.get_bounds();

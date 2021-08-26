@@ -11,6 +11,7 @@
 #include <SDL2/SDL_image.h>
 #include "../../common/component.h"
 #include "../../common/interactive_component.h"
+#include "../../common/shared_resources.h"
 #include "../../common/image.h"
 #include "entity.h"
 
@@ -55,12 +56,14 @@ namespace entity {
     };
 
     /**
-     * Load resources for the entity
+     * Load any resources for this component
      * @param renderer the sdl renderer for loading images
      * @param parent   the parent of this component
+     * @param resources the shared global resources
      */
     void load(SDL_Renderer& renderer,
-              const common::component_t& parent) override;
+              const common::component_t& parent,
+              common::shared_resources& resources) override;
 
     /**
      * Update the player
@@ -72,6 +75,7 @@ namespace entity {
      * Constructor
      * @param x position x
      * @param y position y
+     * @param key_sheet images for key interaction
      */
     bartender_t(int x, int y);
     bartender_t(const bartender_t&) = delete;

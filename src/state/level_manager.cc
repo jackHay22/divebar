@@ -18,24 +18,20 @@ namespace state {
     : common::component_t({0,0,0,0},COMPONENT_ALWAYS_VISIBLE),
       current_map_location(0) {}
 
-  /**
-   * Load any resources for this component
-   * @param renderer the sdl renderer for loading images
-   * @param parent   the parent of this component
-   */
-  void level_manager_t::load(SDL_Renderer& renderer,
-                             const common::component_t& parent) {
-    //the shared player animations for all level areas
-    std::shared_ptr<common::image_t> player_anim =
-      std::make_shared<common::image_t>(
-        renderer, this->rsrc_path("animations/player.png")
-      );
-
+    /**
+     * Load any resources for this component
+     * @param renderer the sdl renderer for loading images
+     * @param parent   the parent of this component
+     * @param resources the shared global resources
+     */
+    void level_manager_t::load(SDL_Renderer& renderer,
+                                const common::component_t& parent,
+                                common::shared_resources& resources) {
     //load the different map regions
-    this->add_child(std::make_unique<levels::dive_bar_t>(player_anim));
+    this->add_child(std::make_unique<levels::dive_bar_t>());
 
     //load child resources
-    component_t::load_children(renderer);
+    component_t::load_children(renderer,resources);
   }
 
   /**

@@ -9,6 +9,7 @@
 
 #include <SDL2/SDL.h>
 #include "../../common/component.h"
+#include "../../common/shared_resources.h"
 
 namespace state {
 namespace tilemap {
@@ -18,7 +19,7 @@ namespace tilemap {
    */
   class virtual_tile_t : public common::component_t {
   private:
-    void load(SDL_Renderer&, const common::component_t&) override {}
+    void load(SDL_Renderer&, const common::component_t&, common::shared_resources&) override {}
   public:
     /**
      * Constructor

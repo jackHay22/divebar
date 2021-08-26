@@ -19,28 +19,27 @@ namespace entity {
   /**
    * Constructor
    * @param position starting position for the player
-   * @param anim_sheet the animations used by the player
    */
-  player_t::player_t(SDL_Rect position,
-                     std::shared_ptr<common::image_t> anim_sheet)
+  player_t::player_t(SDL_Rect position)
     : entity_t(position,100),
-      anim_sheet(anim_sheet),
       next_action(-1),
       next_direction(false) {}
 
   /**
-   * Load actions for the player
+   * Load any resources for this component
    * @param renderer the sdl renderer for loading images
    * @param parent   the parent of this component
+   * @param resources the shared global resources
    */
   void player_t::load(SDL_Renderer& renderer,
-                      const component_t& parent) {
+                      const common::component_t& parent,
+                      common::shared_resources& resources) {
     //add idle action
     this->add_child(
       std::make_unique<actions::idle_t>(
         //the idle animation
         std::make_unique<common::anim_t>(
-          anim_sheet, 32,48, 0, 12, 3
+          resources.player_image, 32,48, 0, 12, 3
         )
       )
     );
@@ -49,20 +48,20 @@ namespace entity {
       std::make_unique<actions::walking_t>(
         //the walking flat animation
         std::make_unique<common::anim_t>(
-          anim_sheet, 32,48, 1, 8, 2
+          resources.player_image, 32,48, 1, 8, 2
         ),
         //the walking up animation
         std::make_unique<common::anim_t>(
-          anim_sheet, 32,48, 2, 11, 2, true
+          resources.player_image, 32,48, 2, 11, 2, true
         ),
         //the walking down animation
         std::make_unique<common::anim_t>(
-          anim_sheet, 32,48, 3, 11, 2, true
+          resources.player_image, 32,48, 3, 11, 2, true
         )
       )
     );
     //load the action resources
-    component_t::load_children(renderer);
+    component_t::load_children(renderer,resources);
   }
 
   /**

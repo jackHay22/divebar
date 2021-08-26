@@ -10,6 +10,7 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 #include "../common/component.h"
+#include "../common/shared_resources.h"
 
 namespace state {
 
@@ -29,7 +30,9 @@ namespace state {
     SDL_Rect camera;
 
     //unused (no parent)
-    void load(SDL_Renderer& renderer, const common::component_t& parent) override {}
+    void load(SDL_Renderer&,
+              const common::component_t&,
+              common::shared_resources&) override {}
 
     /**
      * Manager always visible (need this to render children)

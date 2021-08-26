@@ -12,6 +12,7 @@
 #include <string>
 #include <stdint.h>
 #include <SDL2/SDL.h>
+#include "shared_resources.h"
 
 namespace common {
 
@@ -100,12 +101,7 @@ namespace common {
     virtual void update(component_t& parent);
 
     /**
-     * Update all child components
-     */
-    void update_children();
-
-    /**
-     * Updater a single child
+     * Update a single child
      * @param idx the index of the child
      */
     void update_child(size_t idx);
@@ -119,25 +115,11 @@ namespace common {
                               const SDL_Event& e);
 
     /**
-     * Pass event to children if not handled at this level
-     * @param e the sdl event
-     */
-    void children_handle_event(const SDL_Event& e);
-
-    /**
      * Let a single child handle the event
      * @param e   the event
      * @param idx the child index
      */
     void child_handle_event(const SDL_Event& e, size_t idx);
-
-    /**
-     * Render children
-     * @param renderer the sdl renderer
-     * @param camera   the current camera
-     */
-    void render_children(SDL_Renderer& renderer,
-                        const SDL_Rect& camera) const;
 
     /**
      * Render this component
@@ -150,6 +132,15 @@ namespace common {
                         const SDL_Rect& camera) const;
 
     /**
+     * Render any foreground elements for this component (i.e. ui components)
+     * (By default renders children)
+     * @param renderer the sdl renderer
+     * @param camera   the current camera
+     */
+    virtual void render_fg(SDL_Renderer& renderer,
+                           const SDL_Rect& camera) const;
+
+    /**
      * Render a single child
      * @param renderer the sdl renderer
      * @param camera   the camera
@@ -159,19 +150,34 @@ namespace common {
                       const SDL_Rect& camera,
                       size_t idx) const;
 
+
+    /**
+     * Render a single child fg components
+     * @param renderer the sdl renderer
+     * @param camera   the camera
+     * @param idx      the child to render
+     */
+    void render_fg_child(SDL_Renderer& renderer,
+                         const SDL_Rect& camera,
+                         size_t idx) const;
+
     /**
      * Load resources for registered children
      * @param  renderer the sdl renderer for loading images
+     * @param  resources shared resources
      */
-    void load_children(SDL_Renderer& renderer);
+    void load_children(SDL_Renderer& renderer,
+                       shared_resources& resources);
 
     /**
      * Load any resources for this component
      * @param renderer the sdl renderer for loading images
      * @param parent   the parent of this component
+     * @param resources shared resources available to all components
      */
     virtual void load(SDL_Renderer& renderer,
-                      const component_t& parent) = 0;
+                      const component_t& parent,
+                      shared_resources& resources) = 0;
 
     /**
      * Render the bounds of this component for debugging

@@ -7,6 +7,7 @@
 #include "manager.h"
 #include "level_manager.h"
 #include "../window/window.h"
+#include "../common/shared_resources.h"
 #include <memory>
 
 namespace state {
@@ -26,8 +27,12 @@ namespace state {
     //add the level manager
     this->add_child(std::make_unique<level_manager_t>());
 
+    //create shared resources
+    std::shared_ptr<common::shared_resources> shared_resources =
+      std::make_shared<common::shared_resources>(renderer, resource_dir);
+
     //load resources for children
-    component_t::load_children(renderer);
+    component_t::load_children(renderer,*shared_resources);
   }
 
   /**
@@ -54,6 +59,7 @@ namespace state {
   void manager_t::render_manager(SDL_Renderer& renderer) const {
     //render the active state
     common::component_t::render_child(renderer,camera,current_state);
+    common::component_t::render_fg_child(renderer,camera,current_state);
   }
 
   /**

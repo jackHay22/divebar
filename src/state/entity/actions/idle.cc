@@ -24,11 +24,13 @@ namespace actions {
    * Load any resources for this component
    * @param renderer the sdl renderer for loading images
    * @param parent   the parent of this component
+   * @param resources the shared global resources
    */
   void idle_t::load(SDL_Renderer& renderer,
-                    const common::component_t& parent) {
+                    const common::component_t& parent,
+                    common::shared_resources& resources) {
     this->set_completed(true); //can always toggle action off
-    component_t::load_children(renderer);
+    component_t::load_children(renderer,resources);
   }
 
   /**
@@ -42,7 +44,7 @@ namespace actions {
     this->set_size(current_position.w,current_position.h);
 
     //update the current animation
-    common::component_t::update_children();
+    common::component_t::update(parent);
 
     //update the animation direction
     this->get_nth_child<common::anim_t>(0).set_flipped(

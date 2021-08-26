@@ -124,13 +124,6 @@ namespace common {
    * @param parent the parent component
    */
   void component_t::update(component_t& parent) {
-    this->update_children();
-  }
-
-  /**
-   * Update all child components
-   */
-  void component_t::update_children() {
     bool depth_has_player = false;
     int px = 0;
     int py = 0;
@@ -192,15 +185,7 @@ namespace common {
    */
   void component_t::handle_event(component_t& parent,
                                  const SDL_Event& e) {
-    //pass to children by default
-    children_handle_event(e);
-  }
-
-  /**
-   * Pass event to children if not handled at this level
-   * @param e the sdl event
-   */
-  void component_t::children_handle_event(const SDL_Event& e) {
+    //pass to children
     for (size_t i=0; i<children.size(); i++) {
       children.at(i)->handle_event(*this,e);
     }
@@ -216,14 +201,29 @@ namespace common {
   }
 
   /**
-   * Render children
+   * Render this component
+   * (By default renders children)
+   * Implemented by the concrete type
    * @param renderer the sdl renderer
    * @param camera   the current camera
    */
-  void component_t::render_children(SDL_Renderer& renderer,
-                                    const SDL_Rect& camera) const {
+  void component_t::render(SDL_Renderer& renderer,
+                           const SDL_Rect& camera) const {
     for (size_t i=0; i<children.size(); i++) {
       render_child(renderer,camera,i);
+    }
+  }
+
+  /**
+   * Render any foreground elements for this component (i.e. ui components)
+   * (By default renders children)
+   * @param renderer the sdl renderer
+   * @param camera   the current camera
+   */
+  void component_t::render_fg(SDL_Renderer& renderer,
+                              const SDL_Rect& camera) const {
+    for (size_t i=0; i<children.size(); i++) {
+      render_fg_child(renderer,camera,i);
     }
   }
 
@@ -243,24 +243,26 @@ namespace common {
   }
 
   /**
-   * Render this component
-   * (By default renders children)
-   * Implemented by the concrete type
+   * Render a single child fg components
    * @param renderer the sdl renderer
-   * @param camera   the current camera
+   * @param camera   the camera
+   * @param idx      the child to render
    */
-  void component_t::render(SDL_Renderer& renderer,
-                           const SDL_Rect& camera) const {
-    this->render_children(renderer,camera);
+  void component_t::render_fg_child(SDL_Renderer& renderer,
+                                    const SDL_Rect& camera,
+                                    size_t idx) const {
+    children.at(idx)->render_fg(renderer,camera);
   }
 
   /**
    * Load resources for registered children
    * @param  renderer the sdl renderer for loading images
+   * @param  renderer the sdl renderer for loading images
    */
-  void component_t::load_children(SDL_Renderer& renderer) {
+  void component_t::load_children(SDL_Renderer& renderer,
+                                  shared_resources& resources) {
     for (size_t i=0; i<children.size(); i++) {
-      children.at(i)->load(renderer, *this);
+      children.at(i)->load(renderer, *this, resources);
     }
   }
 

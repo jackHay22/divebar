@@ -8,7 +8,7 @@
 #define _DIVEBAR_COMMON_INTERACTIVE_COMPONENT_H
 
 #include "component.h"
-#include "image.h"
+#include "shared_resources.h"
 
 namespace common {
 
@@ -19,16 +19,12 @@ namespace common {
   private:
     //the keycode that triggers the interaction
     SDL_Keycode code;
-    //the text to display for the interaction prompt
-    std::string display_code;
     //the proximity radius that allows the interaction
     int radius;
     //whether the interaction is triggered automatically
     bool automatic;
     //whether the component can currently be interacted with
     bool can_interact;
-    //the text to show if not automatic
-    std::shared_ptr<common::image_t> text;
 
     /**
      * Handle an sdl event
@@ -37,6 +33,14 @@ namespace common {
      */
     void handle_event(component_t& parent,
                       const SDL_Event& e) override;
+
+    /**
+     * Render key when enabled
+     * @param renderer the sdl renderer
+     * @param camera   the current camera
+     */
+    void render_fg(SDL_Renderer& renderer,
+                   const SDL_Rect& camera) const;
 
     friend struct component_t;
 
@@ -52,21 +56,13 @@ namespace common {
 
     /**
      * Load any resources for this component
-     * Derived classes must call
      * @param renderer the sdl renderer for loading images
      * @param parent   the parent of this component
+     * @param resources the shared global resources
      */
     virtual void load(SDL_Renderer& renderer,
-                      const component_t& parent) override;
-
-    /**
-     * Render this component (within radius)
-     * Derived classes must call
-     * @param renderer the sdl renderer
-     * @param camera   the current camera
-     */
-    virtual void render(SDL_Renderer& renderer,
-                        const SDL_Rect& camera) const override;
+                      const component_t& parent,
+                      shared_resources& resources) override;
 
     /**
      * Called when the player interacts with this component
@@ -86,14 +82,12 @@ namespace common {
      * @param bounds the bounds of the component @see component_t
      * @param flags  attributes @see component_t
      * @param code the key that triggers the interaction
-     * @param display_code the text to display for interaction
      * @param radius the distance from player that triggers the interaction
      * @param automatic the interaction is triggered by proximity
      */
     interactive_component_t(SDL_Rect bounds,
                             uint8_t flags,
                             SDL_Keycode code,
-                            const std::string& display_code,
                             int radius,
                             bool automatic=false);
     interactive_component_t(const interactive_component_t&) = delete;

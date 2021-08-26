@@ -29,13 +29,15 @@ namespace tilemap {
       layers(layers),
       solid_idx(solid_idx) {}
 
-  /**
-   * Load any resources for this component
-   * @param renderer the sdl renderer for loading images
-   * @param parent   the parent of this component
-   */
-  void tilemap_t::load(SDL_Renderer& renderer,
-                       const common::component_t& parent) {
+    /**
+     * Load any resources for this component
+     * @param renderer the sdl renderer for loading images
+     * @param parent   the parent of this component
+     * @param resources the shared global resources
+     */
+    void tilemap_t::load(SDL_Renderer& renderer,
+                         const common::component_t& parent,
+                         common::shared_resources& resources) {
     //add map layers
     for (size_t i=0; i<layers.size(); i++) {
       component_t::add_child(
@@ -46,7 +48,7 @@ namespace tilemap {
     }
 
     //load child resources
-    component_t::load_children(renderer);
+    component_t::load_children(renderer,resources);
   }
 
   /**

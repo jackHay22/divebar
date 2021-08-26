@@ -25,7 +25,7 @@ namespace levels {
    */
   void level_t::render(SDL_Renderer& renderer, const SDL_Rect&) const {
     //render everything in the level using this camera
-    component_t::render_children(renderer,level_camera);
+    component_t::render(renderer,level_camera);
   }
 
   /**

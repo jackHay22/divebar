@@ -73,10 +73,14 @@ namespace common {
   }
 
   /**
-   * Load the animation resource
-   * @param renderer the renderer
+   * Load any resources for this component
+   * @param renderer the sdl renderer for loading images
+   * @param parent   the parent of this component
+   * @param resources the shared global resources
    */
-  void anim_t::load(SDL_Renderer& renderer, const component_t&) {}
+  void anim_t::load(SDL_Renderer&,
+                    const common::component_t&,
+                    common::shared_resources&) {}
 
   /**
    * Update the animation

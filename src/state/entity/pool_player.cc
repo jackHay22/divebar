@@ -28,12 +28,14 @@ namespace entity {
     idle_updates_total(0) {}
 
   /**
-   * Load resources for the entity
+   * Load any resources for this component
    * @param renderer the sdl renderer for loading images
    * @param parent   the parent of this component
+   * @param resources the shared global resources
    */
   void pool_player_t::load(SDL_Renderer& renderer,
-            const component_t& parent) {
+                           const common::component_t& parent,
+                           common::shared_resources& resources) {
     std::shared_ptr<common::image_t> anim_sheet =
       std::make_shared<common::image_t>(
       renderer, this->rsrc_path("animations/pool_player.png")
@@ -65,7 +67,7 @@ namespace entity {
     );
 
     //load the action resources
-    component_t::load_children(renderer);
+    component_t::load_children(renderer,resources);
 
     //determine the total cycles per idle
     idle_updates_total = this->get_nth_child<common::anim_t>(ACTION_WAITING).get_cycle_duration() * 3;

@@ -200,9 +200,11 @@ namespace tilemap {
    * Load any resources for this component
    * @param renderer the sdl renderer for loading images
    * @param parent   the parent of this component
+   * @param resources the shared global resources
    */
   void layer_t::load(SDL_Renderer& renderer,
-                     const common::component_t& parent) {
+                     const common::component_t& parent,
+                     common::shared_resources& resources) {
     //clear any existing contents
     contents.clear();
 

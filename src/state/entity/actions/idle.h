@@ -13,6 +13,7 @@
 #include <string>
 #include "../../../common/component.h"
 #include "../../../common/animation.h"
+#include "../../../common/shared_resources.h"
 #include "action.h"
 
 namespace state {
@@ -29,9 +30,11 @@ namespace actions {
      * Load any resources for this component
      * @param renderer the sdl renderer for loading images
      * @param parent   the parent of this component
+     * @param resources the shared global resources
      */
     void load(SDL_Renderer& renderer,
-              const common::component_t& parent) override;
+              const common::component_t& parent,
+              common::shared_resources& resources) override;
 
     /**
      * Update the state

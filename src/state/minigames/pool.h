@@ -9,6 +9,7 @@
 
 #include <SDL2/SDL.h>
 #include "../../common/interactive_component.h"
+#include "../../common/shared_resources.h"
 
 namespace state {
 namespace minigames {
@@ -21,12 +22,13 @@ namespace minigames {
 
     /**
      * Load any resources for this component
-     * Derived classes must call
      * @param renderer the sdl renderer for loading images
      * @param parent   the parent of this component
+     * @param resources the shared global resources
      */
     void load(SDL_Renderer& renderer,
-              const component_t& parent) override;
+              const common::component_t& parent,
+              common::shared_resources& resources) override;
 
     /**
      * Called when the player interacts with this game

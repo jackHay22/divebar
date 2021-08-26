@@ -10,7 +10,7 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 #include "../../common/component.h"
-#include "../../common/image.h"
+#include "../../common/shared_resources.h"
 #include "entity.h"
 
 namespace state {
@@ -21,20 +21,20 @@ namespace entity {
    */
   class player_t : public entity_t {
   private:
-    //animations used by this player (shared)
-    std::shared_ptr<common::image_t> anim_sheet;
     //the action to switch to once the current one is finished (or -1)
     int next_action;
     //the next direction
     bool next_direction;
 
     /**
-     * Load actions for the player
+     * Load any resources for this component
      * @param renderer the sdl renderer for loading images
      * @param parent   the parent of this component
+     * @param resources the shared global resources
      */
     void load(SDL_Renderer& renderer,
-              const component_t& parent) override;
+              const common::component_t& parent,
+              common::shared_resources& resources) override;
 
     /**
      * Update the player
@@ -53,10 +53,8 @@ namespace entity {
     /**
      * Constructor
      * @param position starting position for the player
-     * @param anim_sheet the animations used by the player
      */
-    player_t(SDL_Rect position,
-             std::shared_ptr<common::image_t> anim_sheet);
+    player_t(SDL_Rect position);
     player_t(const player_t&) = delete;
     player_t& operator=(const player_t&) = delete;
 

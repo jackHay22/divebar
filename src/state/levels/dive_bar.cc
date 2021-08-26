@@ -18,32 +18,26 @@ namespace levels {
 
   /**
    * Default constructor
-   * @param player_anim_sheet the shared animations user by the player
-   * (Since the player can move between levels we share the image resource)
    */
-  dive_bar_t::dive_bar_t(std::shared_ptr<common::image_t> player_anim_sheet)
+  dive_bar_t::dive_bar_t()
     : level_t(),
-      player_anim_sheet(player_anim_sheet),
       player_idx(0) {}
 
   /**
    * Load any resources for this component
    * @param renderer the sdl renderer for loading images
    * @param parent   the parent of this component
+   * @param resources the shared global resources
    */
   void dive_bar_t::load(SDL_Renderer& renderer,
-                        const common::component_t& parent) {
-    //load the tileset
-    std::shared_ptr<common::image_t> tileset =
-      std::make_shared<common::image_t>(
-        renderer,
-        this->rsrc_path("tilesets/bar.png")
-      );
+                        const common::component_t& parent,
+                        common::shared_resources& resources) {
 
     //add background map layers
     this->add_child(std::make_unique<tilemap::tilemap_t>(
       this->rsrc_path("maps/bar.txt"),
-      tileset, std::vector<int>{0,1,2},
+      resources.divebar_tileset,
+      std::vector<int>{0,1,2},
       -1
     ));
 
@@ -59,24 +53,24 @@ namespace levels {
 
     //load the player
     player_idx = this->add_child(std::make_unique<entity::player_t>(
-      SDL_Rect{160,80,8,24},
-      player_anim_sheet
+      SDL_Rect{160,80,8,24}
     ));
 
     //load the foreground map layers (includes ground)
     int fg_idx = this->add_child(std::make_unique<tilemap::tilemap_t>(
       this->rsrc_path("maps/bar.txt"),
-      tileset, std::vector<int>{3,4},
+      resources.divebar_tileset,
+      std::vector<int>{3,4},
       0 // index of solid layer
     ));
 
     //add the pool minigame trigger
-    // this->add_child(std::make_unique<minigames::pool_game_t>(
-    //   SDL_Rect{60, 50, 0, 0}
-    // ));
+    this->add_child(std::make_unique<minigames::pool_game_t>(
+      SDL_Rect{60, 50, 0, 0}
+    ));
 
     //load children
-    component_t::load_children(renderer);
+    component_t::load_children(renderer,resources);
 
     //tilemap now loaded, get dimensions
     const tilemap::tilemap_t& solid_layer = get_nth_child<tilemap::tilemap_t>(fg_idx);
@@ -95,7 +89,7 @@ namespace levels {
     this->center_camera(player_bounds.x, player_bounds.y);
 
     //update components in level
-    component_t::update_children();
+    component_t::update(parent);
   }
 
   /**
@@ -105,8 +99,8 @@ namespace levels {
    */
   void dive_bar_t::handle_event(common::component_t& parent,
                                  const SDL_Event& e) {
-
+    //TODO check for pause
     //children will handle event
-    common::component_t::children_handle_event(e);
+    common::component_t::handle_event(parent,e);
   }
 }}

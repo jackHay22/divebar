@@ -12,6 +12,7 @@
 #include <string>
 #include <memory>
 #include "component.h"
+#include "shared_resources.h"
 #include "image.h"
 
 namespace common {
@@ -49,10 +50,14 @@ namespace common {
     void update(component_t& parent) override;
 
     /**
-     * Load the animation resource
-     * @param renderer the renderer
+     * Load any resources for this component
+     * @param renderer the sdl renderer for loading images
+     * @param parent   the parent of this component
+     * @param resources the shared global resources
      */
-    void load(SDL_Renderer& renderer, const component_t&) override;
+    void load(SDL_Renderer& renderer,
+              const common::component_t& parent,
+              common::shared_resources& resources) override;
 
     /**
      * Render this animation
