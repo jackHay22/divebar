@@ -56,12 +56,6 @@ namespace levels {
     void center_camera(int x, int y);
 
     /**
-     * Get the attributes of the player
-     * @return the attributes of the player
-     */
-    virtual const entity::entity_attributes_t& get_player_attrs() = 0;
-
-    /**
      * Move the player to some position in this level
      * @param x new player position x
      * @param y new player position y

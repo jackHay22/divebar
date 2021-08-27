@@ -38,8 +38,9 @@ namespace minigames {
   /**
    * Called when the player interacts with this game
    * @param parent the parent
+   * @param player the player
    */
-  void pool_game_t::interact_entered(component_t& parent) {
+  void pool_game_t::interact_entered(component_t& parent, state::entity::player_t& player) {
     std::cout << "interaction handler for pool called" << std::endl;
   }
 }}

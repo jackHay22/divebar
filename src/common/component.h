@@ -14,6 +14,12 @@
 #include <SDL2/SDL.h>
 #include "shared_resources.h"
 
+namespace state {
+  namespace entity {
+    class player_t;
+  }
+}
+
 namespace common {
 
   //flags
@@ -49,10 +55,19 @@ namespace common {
 
     /**
      * Call update on an interactive components close enough to the provided location
-     * @param center_x the location x
-     * @param center_y the location y
+     * @param player the player
      */
-    void update_interactive_components(int center_x, int center_y);
+    void update_interactive_components(state::entity::player_t& player);
+
+    /**
+     * Handle event, pass player to interactive components
+     * @param parent the parent component
+     * @param e      the event
+     * @param player the player
+     */
+    void handle_event_with_player(component_t& parent,
+                                  const SDL_Event& e,
+                                  state::entity::player_t& player);
 
   protected:
     /**

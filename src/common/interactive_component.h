@@ -9,6 +9,7 @@
 
 #include "component.h"
 #include "shared_resources.h"
+#include "../state/entity/player.h"
 
 namespace common {
 
@@ -30,9 +31,11 @@ namespace common {
      * Handle an sdl event
      * @param parent the component parent
      * @param event the sdl event
+     * @param player the player
      */
-    void handle_event(component_t& parent,
-                      const SDL_Event& e) override;
+    void handle_event_player(component_t& parent,
+                             const SDL_Event& e,
+                             state::entity::player_t& player);
 
     /**
      * Render key when enabled
@@ -47,10 +50,9 @@ namespace common {
     /**
      * The distance from the player
      * @param parent the parent of this component
-     * @param x player x
-     * @param y player y
+     * @param player the player
      */
-    void update_player_distance(component_t& parent, int x, int y);
+    void update_player_distance(component_t& parent, state::entity::player_t& player);
 
   protected:
 
@@ -67,14 +69,18 @@ namespace common {
     /**
      * Called when the player interacts with this component
      * @param parent the parent
+     * @param player the player
      */
-    virtual void interact_entered(component_t& parent) = 0;
+    virtual void interact_entered(component_t& parent,
+                                  state::entity::player_t& player) = 0;
 
     /**
      * Called when the player leaves the interaction radius
      * @param parent the parent
+     * @param player the player
      */
-    virtual void interact_exited(component_t& parent) {}
+    virtual void interact_exited(component_t& parent,
+                                 state::entity::player_t& player) {}
 
   public:
     /**

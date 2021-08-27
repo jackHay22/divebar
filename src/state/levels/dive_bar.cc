@@ -104,15 +104,7 @@ namespace levels {
     //children will handle event
     common::component_t::handle_event(parent,e);
   }
-
-  /**
-   * Get the attributes of the player
-   * @return the attributes of the player
-   */
-  const entity::entity_attributes_t& dive_bar_t::get_player_attrs() {
-    return this->get_nth_child<entity::entity_t>(player_idx).get_attributes();
-  }
-
+  
   /**
    * Move the player to some position in this level
    * @param x new player position x

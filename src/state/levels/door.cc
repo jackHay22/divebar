@@ -35,11 +35,10 @@ namespace levels {
    /**
     * Called when the player interacts with this door
     * @param parent the parent
+    * @param player the player
     */
-   void door_t::interact_entered(component_t& parent) {
-     //get the player attributes to switch over
-     const entity::entity_attributes_t& attrs = parent.get_as<level_t>().get_player_attrs();
-
+   void door_t::interact_entered(component_t& parent,
+                                 state::entity::player_t& player) {
      component_t *grandparent;
      if (parent.get_parent(&grandparent)) {
 
@@ -48,7 +47,7 @@ namespace levels {
          target_index,
           target_px,
           target_py,
-          attrs
+          player.get_attributes()
        );
      }
    }

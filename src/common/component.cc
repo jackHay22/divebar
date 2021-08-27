@@ -78,17 +78,34 @@ namespace common {
 
   /**
    * Call update on an interactive components close enough to the provided location
-   * @param center_x the location x
-   * @param center_y the location y
+   * @param player the player
    */
-  void component_t::update_interactive_components(int center_x, int center_y) {
+  void component_t::update_interactive_components(state::entity::player_t& player) {
     for (size_t i=0; i<children.size(); i++) {
       if (interactive_component_t *c = dynamic_cast<interactive_component_t*>(children.at(i).get())) {
-        c->update_player_distance(*this,center_x,center_y);
+        c->update_player_distance(*this,player);
       }
 
       //recurse down component tree
-      children.at(i)->update_interactive_components(center_x,center_y);
+      children.at(i)->update_interactive_components(player);
+    }
+  }
+
+  /**
+   * Handle event, pass player to interactive components
+   * @param parent the parent component
+   * @param e      the event
+   * @param player the player
+   */
+  void component_t::handle_event_with_player(component_t& parent,
+                                             const SDL_Event& e,
+                                             state::entity::player_t& player) {
+    for (size_t i=0; i<children.size(); i++) {
+      if (interactive_component_t *c = dynamic_cast<interactive_component_t*>(children.at(i).get())) {
+        c->handle_event_player(*this,e,player);
+      }
+      //recurse
+      children.at(i)->handle_event_with_player(*this,e,player);
     }
   }
 
@@ -125,22 +142,20 @@ namespace common {
    */
   void component_t::update(component_t& parent) {
     bool depth_has_player = false;
-    int px = 0;
-    int py = 0;
+    state::entity::player_t* player = nullptr;
+
     //update each in the x direction
     for (size_t i=0; i<children.size(); i++) {
       update_child(i);
 
-      //attempt to cast to player
-      if (state::entity::player_t *p = dynamic_cast<state::entity::player_t*>(children.at(i).get())) {
+      if (state::entity::player_t* p = dynamic_cast<state::entity::player_t*>(children.at(i).get())) {
         depth_has_player = true;
-        px = p->bounds.x + (p->bounds.w / 2);
-        py = p->bounds.y + (p->bounds.h / 2);
+        player = p;
       }
     }
 
     if (depth_has_player) {
-      update_interactive_components(px,py);
+      update_interactive_components(*player);
     }
   }
 
@@ -185,9 +200,22 @@ namespace common {
    */
   void component_t::handle_event(component_t& parent,
                                  const SDL_Event& e) {
+    bool depth_has_player = false;
+    state::entity::player_t* player;
+
     //pass to children
     for (size_t i=0; i<children.size(); i++) {
       children.at(i)->handle_event(*this,e);
+
+      //attempt to cast to player
+      if ((player = dynamic_cast<state::entity::player_t*>(children.at(i).get()))) {
+        depth_has_player = true;
+      }
+    }
+
+    if (depth_has_player) {
+      //pass player to interactive components as well
+      handle_event_with_player(parent,e,*player);
     }
   }
 

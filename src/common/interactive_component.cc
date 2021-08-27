@@ -61,11 +61,13 @@ namespace common {
    * Handle an sdl event
    * @param parent the component parent
    * @param event the sdl event
+   * @param player the player
    */
-  void interactive_component_t::handle_event(component_t& parent,
-                                             const SDL_Event& e) {
+  void interactive_component_t::handle_event_player(component_t& parent,
+                                                    const SDL_Event& e,
+                                                    state::entity::player_t& player) {
     if ((e.type == SDL_KEYDOWN) && can_interact && !automatic && (e.key.keysym.sym == code)) {
-      interact_entered(parent);
+      interact_entered(parent,player);
     }
   }
 
@@ -84,24 +86,27 @@ namespace common {
   /**
    * The distance from the player
    * @param parent the parent of this component
-   * @param x player x
-   * @param y player y
+   * @param player the player
    */
-  void interactive_component_t::update_player_distance(component_t& parent, int x, int y) {
+  void interactive_component_t::update_player_distance(component_t& parent,
+                                                       state::entity::player_t& player) {
     const SDL_Rect& curr_bounds = this->get_bounds();
+    const SDL_Rect& player_bounds = player.get_bounds();
 
     bool prev = can_interact;
     //calculate distance
-    can_interact = radius > sqrt(pow(x - (curr_bounds.x + (curr_bounds.w / 2)), 2) +
-                                 pow(y - (curr_bounds.y + (curr_bounds.h / 2)), 2));
+    can_interact = radius > sqrt(pow((player_bounds.x + (player_bounds.w / 2)) -
+                                     (curr_bounds.x + (curr_bounds.w / 2)), 2) +
+                                 pow((player_bounds.y + (player_bounds.h / 2)) -
+                                     (curr_bounds.y + (curr_bounds.h / 2)), 2));
 
     if (!can_interact && prev) {
-      interact_exited(parent);
+      interact_exited(parent,player);
     }
 
     //do interaction if set to automatic
     if (can_interact && automatic) {
-      interact_entered(parent);
+      interact_entered(parent,player);
     }
   }
 

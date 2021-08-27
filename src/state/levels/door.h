@@ -29,8 +29,10 @@ namespace levels {
     /**
      * Called when the player interacts with this door
      * @param parent the parent
+     * @param player the player
      */
-    void interact_entered(component_t& parent) override;
+    void interact_entered(component_t& parent,
+                          state::entity::player_t& player) override;
 
   public:
     /**

@@ -13,6 +13,7 @@
 #include "../../common/interactive_component.h"
 #include "../../common/shared_resources.h"
 #include "../../common/image.h"
+#include "player.h"
 #include "entity.h"
 
 namespace state {
@@ -43,14 +44,18 @@ namespace entity {
       /**
        * Called when the player interacts with this game
        * @param parent the parent
+       * @param player the player
        */
-      void interact_entered(common::component_t& parent) override;
+      void interact_entered(common::component_t& parent,
+                           state::entity::player_t& player) override;
 
       /**
        * Called when the player leaves the interaction radius
        * @param parent the parent
+       * @param player the player
        */
-      void interact_exited(common::component_t& parent) override;
+      void interact_exited(common::component_t& parent,
+                           state::entity::player_t& player) override;
     public:
 
       /**
