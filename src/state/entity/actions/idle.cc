@@ -16,8 +16,9 @@ namespace actions {
    * @param idle_anim the animation for the idle action
    */
   idle_t::idle_t(std::unique_ptr<common::anim_t> idle_anim)
-    : action_t() {
-    this->add_child(std::move(idle_anim));
+    : action_t(),
+      anim_child_idx(0) {
+    anim_child_idx = this->add_child(std::move(idle_anim));
   }
 
   /**
@@ -47,7 +48,7 @@ namespace actions {
     common::component_t::update(parent);
 
     //update the animation direction
-    this->get_nth_child<common::anim_t>(0).set_flipped(
+    this->get_nth_child<common::anim_t>(anim_child_idx).set_flipped(
       //flip the active animation based on the entity direction
       parent.get_as<entity_t>().facing_left()
     );

@@ -10,10 +10,6 @@
 namespace state {
 namespace entity {
 
-  #define ACTION_SHOOTING 0
-  #define ACTION_WAITING  1
-  #define ACTION_PREPARE  2
-
   #define ANIM_W 48
   #define ANIM_H 24
 
@@ -24,8 +20,11 @@ namespace entity {
    */
   pool_player_t::pool_player_t(int x, int y)
     : entity_t({x,y,ANIM_W,ANIM_H},100),
-    idle_updates_rem(0),
-    idle_updates_total(0) {}
+      idle_updates_rem(0),
+      idle_updates_total(0),
+      action_shooting(0),
+      action_waiting(0),
+      action_prepare(0) {}
 
   /**
    * Load any resources for this component
@@ -42,35 +41,38 @@ namespace entity {
     );
 
     //add shooting anim
-    this->add_child(
+    action_shooting = this->add_child(
       //shooting anim
       std::make_unique<common::anim_t>(
         anim_sheet, ANIM_W, ANIM_H,
-        ACTION_SHOOTING, 12, 3, true
+        0, 12, 3, true
       )
     );
     //add idle anim
-    this->add_child(
-      //shooting anim
+    action_waiting = this->add_child(
+      //waiting anim
       std::make_unique<common::anim_t>(
         anim_sheet, ANIM_W, ANIM_H,
-        ACTION_WAITING, 4, 3
+        1, 4, 3
       )
     );
     //add prep anim
-    this->add_child(
-      //shooting anim
+    action_prepare = this->add_child(
+      //prep anim
       std::make_unique<common::anim_t>(
         anim_sheet, ANIM_W, ANIM_H,
-        ACTION_PREPARE, 12, 3, true
+        2, 12, 3, true
       )
     );
+
+    //set the current action
+    current_action = action_waiting;
 
     //load the action resources
     component_t::load_children(renderer,resources);
 
     //determine the total cycles per idle
-    idle_updates_total = this->get_nth_child<common::anim_t>(ACTION_WAITING).get_cycle_duration() * 3;
+    idle_updates_total = this->get_nth_child<common::anim_t>(action_waiting).get_cycle_duration() * 3;
     idle_updates_rem = idle_updates_total;
   }
 
@@ -78,22 +80,22 @@ namespace entity {
    * Update the player
    */
   void pool_player_t::update(common::component_t& parent) {
-    if (current_action == ACTION_WAITING) {
+    if (current_action == action_waiting) {
       if (idle_updates_rem > 0) {
         idle_updates_rem--;
       } else {
-        current_action = ACTION_PREPARE;
+        current_action = action_prepare;
         this->get_nth_child<common::anim_t>(current_action).reset_animation();
       }
 
     } else if (this->get_nth_child<common::anim_t>(current_action).anim_complete()) {
 
-      if (current_action == ACTION_SHOOTING) {
-        current_action = ACTION_WAITING;
+      if (current_action == action_shooting) {
+        current_action = action_waiting;
         idle_updates_rem = idle_updates_total;
 
-      } else if (current_action == ACTION_PREPARE) {
-        current_action = ACTION_SHOOTING;
+      } else if (current_action == action_prepare) {
+        current_action = action_shooting;
       }
 
       this->get_nth_child<common::anim_t>(current_action).reset_animation();

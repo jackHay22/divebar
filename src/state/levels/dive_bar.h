@@ -22,7 +22,7 @@ namespace levels {
   class dive_bar_t : public level_t {
   private:
     //the index of the player (as a child)
-    int player_idx;
+    size_t player_idx;
 
     /**
      * Load any resources for this component

@@ -25,7 +25,7 @@ namespace entity {
     //the health of the entity
     int health;
     //the child index of the entity attributes
-    int attributes_idx;
+    size_t attributes_idx;
 
     /**
      * Update the state

@@ -11,9 +11,6 @@
 namespace state {
 namespace entity {
 
-  #define ACTION_SERVE 0
-  #define ACTION_WALK 1
-  #define ACTION_IDLE 2
   #define ANIM_W 40
   #define ANIM_H 32
   #define IDLE_CYCLES 3
@@ -28,7 +25,10 @@ namespace entity {
       working(false),
       idle_cycle_duration(0),
       rem_idle_cycles(0),
-      needs_reset(false) {}
+      needs_reset(false),
+      action_serve(0),
+      action_walk(0),
+      action_idle(0) {}
 
   /**
    * Constructor
@@ -37,7 +37,7 @@ namespace entity {
   bartender_t::serve_drink::serve_drink(SDL_Rect position)
     : common::interactive_component_t(
       position,
-      COMPONENT_ALWAYS_VISIBLE,
+      COMPONENT_VISIBLE,
       SDLK_e, //unused
       16,
       true
@@ -76,24 +76,24 @@ namespace entity {
     );
 
     //add serving anim
-    this->add_child(
+    action_serve = this->add_child(
       std::make_unique<common::anim_t>(
         anim_sheet, ANIM_W, ANIM_H,
-        ACTION_SERVE, 16, 3, true
+        0, 16, 3, true
       )
     );
     //add walking animation
-    this->add_child(
+    action_walk = this->add_child(
       std::make_unique<common::anim_t>(
         anim_sheet, ANIM_W, ANIM_H,
-        ACTION_WALK, 7, 3, true
+        1, 7, 3, true
       )
     );
     //add idle anim
-    this->add_child(
+    action_idle = this->add_child(
       std::make_unique<common::anim_t>(
         anim_sheet, ANIM_W, ANIM_H,
-        ACTION_IDLE, 12, 3
+        2, 12, 3
       )
     );
 
@@ -103,10 +103,10 @@ namespace entity {
     ));
 
     //Set the starting action
-    current_action = ACTION_SERVE;
+    current_action = action_serve;
 
     //determine the duration of the idle cycle
-    idle_cycle_duration = this->get_nth_child<common::anim_t>(ACTION_IDLE).get_cycle_duration();
+    idle_cycle_duration = this->get_nth_child<common::anim_t>(action_idle).get_cycle_duration();
     rem_idle_cycles = idle_cycle_duration * IDLE_CYCLES;
 
     //load the action resources
@@ -119,19 +119,19 @@ namespace entity {
   void bartender_t::update(common::component_t& parent) {
     if (this->get_nth_child<common::anim_t>(current_action).anim_complete()) {
       //update the current animation
-      if (current_action == ACTION_SERVE) {
-        current_action = ACTION_WALK;
+      if (current_action == action_serve) {
+        current_action = action_walk;
         //reset the animation
         this->get_nth_child<common::anim_t>(current_action).reset_animation();
 
-      } else if (current_action == ACTION_WALK) {
-        current_action = ACTION_IDLE;
+      } else if (current_action == action_walk) {
+        current_action = action_idle;
         //reset the animation
         this->get_nth_child<common::anim_t>(current_action).reset_animation();
       }
     }
 
-    if ((current_action == ACTION_IDLE) && working) {
+    if ((current_action == action_idle) && working) {
       rem_idle_cycles--;
       working = rem_idle_cycles > 0;
     }
@@ -148,7 +148,7 @@ namespace entity {
       //player will need to leave to trigger this again
       needs_reset = true;
       //switch to serving action
-      current_action = ACTION_SERVE;
+      current_action = action_serve;
       working = true;
       rem_idle_cycles = idle_cycle_duration * IDLE_CYCLES;
 

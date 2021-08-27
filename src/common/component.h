@@ -60,7 +60,7 @@ namespace common {
      * @param c the child
      * @return the index of the child
      */
-    int add_child(std::unique_ptr<component_t> c);
+    size_t add_child(std::unique_ptr<component_t> c);
 
     /**
      * Get the nth child, cast to type

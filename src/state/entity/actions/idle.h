@@ -25,6 +25,8 @@ namespace actions {
    */
   class idle_t : public action_t {
   private:
+    //the index of the animation
+    size_t anim_child_idx;
 
     /**
      * Load any resources for this component

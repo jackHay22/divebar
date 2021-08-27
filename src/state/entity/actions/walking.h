@@ -30,6 +30,11 @@ namespace actions {
     //whether this entity is walking down
     bool walking_down;
 
+    //anim children indices
+    size_t walking_action;
+    size_t climbing_up_action;
+    size_t climbing_down_action;
+
     /**
      * Load any resources for this component
      * @param renderer the sdl renderer for loading images

@@ -13,10 +13,6 @@ namespace state {
 namespace entity {
 namespace actions {
 
-  #define WALKING_ANIM  0
-  #define CLIMBING_ANIM 1
-  #define CLIMBING_DOWN_ANIM 2
-
   /**
    * Constructor
    * @param flat_anim the walking animation
@@ -28,11 +24,14 @@ namespace actions {
                        std::unique_ptr<common::anim_t> down_anim)
     : action_t(),
       walking_up(false),
-      walking_down(false) {
+      walking_down(false),
+      walking_action(0),
+      climbing_up_action(0),
+      climbing_down_action(0) {
     //add the animations as children of this component
-    this->add_child(std::move(flat_anim));
-    this->add_child(std::move(up_anim));
-    this->add_child(std::move(down_anim));
+    walking_action = this->add_child(std::move(flat_anim));
+    climbing_up_action = this->add_child(std::move(up_anim));
+    climbing_down_action = this->add_child(std::move(down_anim));
   }
 
   /**
@@ -102,11 +101,11 @@ namespace actions {
 
         if (walking_down) {
           //reset the walk down animation
-          this->get_nth_child<common::anim_t>(CLIMBING_DOWN_ANIM).reset_animation();
+          this->get_nth_child<common::anim_t>(climbing_down_action).reset_animation();
         }
       } else {
         //reset the walk up animation
-        this->get_nth_child<common::anim_t>(CLIMBING_ANIM).reset_animation();
+        this->get_nth_child<common::anim_t>(climbing_up_action).reset_animation();
       }
     }
 
@@ -133,7 +132,7 @@ namespace actions {
     const SDL_Rect& current_position = parent.get_bounds();
 
     //get the climbing animation
-    const common::anim_t& climbing_anim = this->get_nth_child<common::anim_t>(CLIMBING_ANIM);
+    const common::anim_t& climbing_anim = this->get_nth_child<common::anim_t>(climbing_up_action);
 
     //get the level to set the camera
     component_t *grandparent;
@@ -184,7 +183,7 @@ namespace actions {
     const SDL_Rect& current_position = parent.get_bounds();
 
     //get the climbing animation
-    const common::anim_t& climbing_anim = this->get_nth_child<common::anim_t>(CLIMBING_DOWN_ANIM);
+    const common::anim_t& climbing_anim = this->get_nth_child<common::anim_t>(climbing_down_action);
 
     //get the level to set the camera
     component_t *grandparent;
@@ -231,7 +230,7 @@ namespace actions {
     //check whether the parent is facing left
     bool facing_left = parent.get_as<entity_t>().facing_left();
     //update the animation direction
-    this->get_nth_child<common::anim_t>(walking_up ? CLIMBING_ANIM : (walking_down ? CLIMBING_DOWN_ANIM : WALKING_ANIM)).set_flipped(
+    this->get_nth_child<common::anim_t>(walking_up ? climbing_up_action : (walking_down ? climbing_down_action : walking_action)).set_flipped(
       //flip the active animation based on the entity direction
       facing_left
     );
@@ -254,7 +253,7 @@ namespace actions {
     }
 
     //update the current animation
-    common::component_t::update_child(walking_up ? CLIMBING_ANIM : (walking_down ? CLIMBING_DOWN_ANIM : WALKING_ANIM));
+    common::component_t::update_child(walking_up ? climbing_up_action : (walking_down ? climbing_down_action : walking_action));
 
     //lock the action if walking up (action can be preempted if not walking up)
     this->set_completed(!walking_up);
@@ -269,7 +268,7 @@ namespace actions {
                          const SDL_Rect& camera) const {
     //render the correct animation
     common::component_t::render_child(renderer,camera,
-      walking_up ? CLIMBING_ANIM : (walking_down ? CLIMBING_DOWN_ANIM : WALKING_ANIM));
+      walking_up ? climbing_up_action : (walking_down ? climbing_down_action : walking_action));
   }
 
 }}}

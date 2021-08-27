@@ -32,6 +32,11 @@ namespace entity {
     //whether the player needs to enter and leave the area
     bool needs_reset;
 
+    //action children indices
+    size_t action_serve;
+    size_t action_walk;
+    size_t action_idle;
+
     //interactive component
     class serve_drink : public common::interactive_component_t {
     private:

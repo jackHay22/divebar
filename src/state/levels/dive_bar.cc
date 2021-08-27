@@ -58,7 +58,7 @@ namespace levels {
     ));
 
     //load the foreground map layers (includes ground)
-    int fg_idx = this->add_child(std::make_unique<tilemap::tilemap_t>(
+    size_t fg_idx = this->add_child(std::make_unique<tilemap::tilemap_t>(
       this->rsrc_path("maps/bar.txt"),
       resources.divebar_tileset,
       std::vector<int>{3,4},

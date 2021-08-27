@@ -13,9 +13,6 @@
 namespace state {
 namespace entity {
 
-  #define ACTION_IDLE 0
-  #define ACTION_WALKING 1
-
   /**
    * Constructor
    * @param position starting position for the player
@@ -23,7 +20,9 @@ namespace entity {
   player_t::player_t(SDL_Rect position)
     : entity_t(position,100),
       next_action(-1),
-      next_direction(false) {}
+      next_direction(false),
+      action_idle(0),
+      action_walking(0) {}
 
   /**
    * Load any resources for this component
@@ -35,7 +34,7 @@ namespace entity {
                       const common::component_t& parent,
                       common::shared_resources& resources) {
     //add idle action
-    this->add_child(
+    action_idle = this->add_child(
       std::make_unique<actions::idle_t>(
         //the idle animation
         std::make_unique<common::anim_t>(
@@ -43,8 +42,12 @@ namespace entity {
         )
       )
     );
+
+    //set the current action to idle
+    current_action = action_idle;
+
     //add walking action
-    this->add_child(
+    action_walking = this->add_child(
       std::make_unique<actions::walking_t>(
         //the walking flat animation
         std::make_unique<common::anim_t>(
@@ -94,11 +97,11 @@ namespace entity {
     if (e.type == SDL_KEYDOWN) {
       switch (e.key.keysym.sym) {
         case SDLK_a:
-          next_action = ACTION_WALKING;
+          next_action = action_walking;
           next_direction = true;
           break;
         case SDLK_d:
-          next_action = ACTION_WALKING;
+          next_action = action_walking;
           next_direction = false;
           break;
       }
@@ -107,11 +110,11 @@ namespace entity {
       switch (e.key.keysym.sym) {
         case SDLK_a:
           //stop walking once cycle complete
-          next_action = ACTION_IDLE;
+          next_action = action_idle;
           break;
         case SDLK_d:
           //stop walking once cycle complete
-          next_action = ACTION_IDLE;
+          next_action = action_idle;
           break;
       }
     }

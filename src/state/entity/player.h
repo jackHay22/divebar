@@ -26,6 +26,10 @@ namespace entity {
     //the next direction
     bool next_direction;
 
+    //action children indices
+    size_t action_idle;
+    size_t action_walking;
+
     /**
      * Load any resources for this component
      * @param renderer the sdl renderer for loading images

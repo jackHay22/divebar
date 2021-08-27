@@ -97,7 +97,7 @@ namespace common {
    * @param c the child
    * @return the index of the child
    */
-  int component_t::add_child(std::unique_ptr<component_t> c) {
+  size_t component_t::add_child(std::unique_ptr<component_t> c) {
     //set the parent of the child
     c->parent = this;
     //inherit resource location

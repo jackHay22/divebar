@@ -26,6 +26,11 @@ namespace entity {
     //number of idle cycles remaining
     int idle_updates_total;
 
+    //the action children indices
+    size_t action_shooting;
+    size_t action_waiting;
+    size_t action_prepare;
+
     /**
      * Load any resources for this component
      * @param renderer the sdl renderer for loading images
