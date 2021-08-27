@@ -55,7 +55,7 @@ namespace window {
           SDL_WINDOWPOS_CENTERED,
           LOGICAL_W_PX * scale,
           LOGICAL_H_PX * scale,
-          SDL_WINDOW_SHOWN);
+          SDL_WINDOW_SHOWN | SDL_WINDOW_ALLOW_HIGHDPI);
 
     if (this->window == NULL) {
       throw common::launch_exception("failed to init window: " + std::string(SDL_GetError()));
