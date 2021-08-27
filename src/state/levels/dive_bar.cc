@@ -5,6 +5,7 @@
  */
 
 #include "dive_bar.h"
+#include "door.h"
 #include "../tilemap/tilemap.h"
 #include "../entity/player.h"
 #include "../entity/entity.h"
@@ -70,6 +71,12 @@ namespace levels {
       SDL_Rect{60, 50, 0, 0}
     ));
 
+    //add the door to outside
+    this->add_child(std::make_unique<door_t>(
+      SDL_Rect{272,80,10,24},
+      0, 160, 80
+    ));
+
     //load children
     component_t::load_children(renderer,resources);
 
@@ -104,7 +111,7 @@ namespace levels {
     //children will handle event
     common::component_t::handle_event(parent,e);
   }
-  
+
   /**
    * Move the player to some position in this level
    * @param x new player position x

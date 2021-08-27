@@ -201,15 +201,16 @@ namespace common {
   void component_t::handle_event(component_t& parent,
                                  const SDL_Event& e) {
     bool depth_has_player = false;
-    state::entity::player_t* player;
+    state::entity::player_t* player = nullptr;
 
     //pass to children
     for (size_t i=0; i<children.size(); i++) {
       children.at(i)->handle_event(*this,e);
 
       //attempt to cast to player
-      if ((player = dynamic_cast<state::entity::player_t*>(children.at(i).get()))) {
+      if (state::entity::player_t* p = dynamic_cast<state::entity::player_t*>(children.at(i).get())) {
         depth_has_player = true;
+        player = p;
       }
     }
 

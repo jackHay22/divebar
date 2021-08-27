@@ -26,7 +26,7 @@ namespace levels {
     : common::interactive_component_t(
         position,
         COMPONENT_VISIBLE,
-        SDLK_e, 8
+        SDLK_w, 4
       ),
       target_index(target_index),
       target_px(target_px),
@@ -39,6 +39,9 @@ namespace levels {
     */
    void door_t::interact_entered(component_t& parent,
                                  state::entity::player_t& player) {
+
+     //TODO animate player leaving or something
+
      component_t *grandparent;
      if (parent.get_parent(&grandparent)) {
 
