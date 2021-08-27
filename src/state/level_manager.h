@@ -11,6 +11,7 @@
 #include <SDL2/SDL_image.h>
 #include "../common/component.h"
 #include "../common/shared_resources.h"
+#include "entity/entity_attributes.h"
 
 namespace state {
 
@@ -60,6 +61,18 @@ namespace state {
     level_manager_t();
     level_manager_t(const level_manager_t&) = delete;
     level_manager_t& operator=(const level_manager_t&) = delete;
+
+    /**
+     * Switch to a different level
+     * @param level_idx the level index
+     * @param player_x  the new player position x
+     * @param player_y  the new player position y
+     * @param player_attributes the attributes of the player to update in the new level
+     */
+    void switch_level(int level_idx,
+                      int player_x,
+                      int player_y,
+                      const entity::entity_attributes_t& player_attributes);
   };
 
 }

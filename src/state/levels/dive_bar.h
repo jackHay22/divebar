@@ -54,6 +54,21 @@ namespace levels {
     dive_bar_t();
     dive_bar_t(const dive_bar_t&) = delete;
     dive_bar_t& operator=(const dive_bar_t&) = delete;
+
+    /**
+     * Get the attributes of the player
+     * @return the attributes of the player
+     */
+    const entity::entity_attributes_t& get_player_attrs();
+
+    /**
+     * Move the player to some position in this level
+     * @param x new player position x
+     * @param y new player position y
+     * @param player_attributes the attributes of the player to update
+     */
+    void update_player(int x, int y,
+                       const entity::entity_attributes_t& player_attributes);
   };
 
 }}

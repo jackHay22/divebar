@@ -10,6 +10,7 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 #include "../../common/component.h"
+#include "entity_attributes.h"
 
 namespace state {
 namespace entity {
@@ -23,6 +24,8 @@ namespace entity {
   private:
     //the health of the entity
     int health;
+    //the child index of the entity attributes
+    int attributes_idx;
 
     /**
      * Update the state
@@ -74,6 +77,12 @@ namespace entity {
      * @return false by default
      */
     virtual bool controls_camera() const { return false; }
+
+    /**
+     * Get the attributes of this entity
+     * @return entity attributes
+     */
+    entity_attributes_t& get_attributes();
   };
 
 }}

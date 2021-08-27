@@ -5,6 +5,7 @@
  */
 
 #include "entity.h"
+#include <memory>
 
 namespace state {
 namespace entity {
@@ -19,8 +20,14 @@ namespace entity {
                                                COMPONENT_COLLIDABLE |
                                                COMPONENT_GRAVITY),
       health(health),
+      attributes_idx(0),
       current_action(0),
-      left(false) {}
+      left(false) {
+    //add the entity attributes
+    attributes_idx = this->add_child(
+      std::make_unique<entity_attributes_t>()
+    );
+  }
 
   /**
    * Update the state
@@ -65,6 +72,14 @@ namespace entity {
    */
   void entity_t::update_health(int diff) {
     health += diff;
+  }
+
+  /**
+   * Get the attributes of this entity
+   * @return entity attributes
+   */
+  entity_attributes_t& entity_t::get_attributes() {
+    return this->get_nth_child<entity_attributes_t>(attributes_idx);
   }
 
 }}

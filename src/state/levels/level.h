@@ -9,6 +9,7 @@
 
 #include <SDL2/SDL.h>
 #include "../../common/component.h"
+#include "../entity/entity_attributes.h"
 
 namespace state {
 namespace levels {
@@ -53,6 +54,21 @@ namespace levels {
      * @param y position y
      */
     void center_camera(int x, int y);
+
+    /**
+     * Get the attributes of the player
+     * @return the attributes of the player
+     */
+    virtual const entity::entity_attributes_t& get_player_attrs() = 0;
+
+    /**
+     * Move the player to some position in this level
+     * @param x new player position x
+     * @param y new player position y
+     * @param player_attributes the attributes of the player to update
+     */
+    virtual void update_player(int x, int y,
+                                const entity::entity_attributes_t& player_attributes) = 0;
 
   };
 

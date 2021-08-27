@@ -7,6 +7,7 @@
 #include "dive_bar.h"
 #include "../tilemap/tilemap.h"
 #include "../entity/player.h"
+#include "../entity/entity.h"
 #include "../entity/pool_player.h"
 #include "../entity/bartender.h"
 #include "../minigames/pool.h"
@@ -102,5 +103,25 @@ namespace levels {
     //TODO check for pause
     //children will handle event
     common::component_t::handle_event(parent,e);
+  }
+
+  /**
+   * Get the attributes of the player
+   * @return the attributes of the player
+   */
+  const entity::entity_attributes_t& dive_bar_t::get_player_attrs() {
+    return this->get_nth_child<entity::entity_t>(player_idx).get_attributes();
+  }
+
+  /**
+   * Move the player to some position in this level
+   * @param x new player position x
+   * @param y new player position y
+   * @param player_attributes the attributes of the player to update
+   */
+  void dive_bar_t::update_player(int x, int y,
+                                 const entity::entity_attributes_t& player_attributes) {
+    this->get_nth_child(player_idx).set_position(x,y);
+    this->get_nth_child<entity::entity_t>(player_idx).get_attributes().update(player_attributes);
   }
 }}
