@@ -47,7 +47,7 @@ namespace entity {
      * Update these attributes based on others
      * @param other the other attributes
      */
-    void update(const entity_attributes_t& other);
+    void update_attrs(const entity_attributes_t& other);
   };
 
 }}

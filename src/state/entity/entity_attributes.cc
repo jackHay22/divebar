@@ -21,7 +21,7 @@ namespace entity {
    * Update these attributes based on others
    * @param other the other attributes
    */
-  void entity_attributes_t::update(const entity_attributes_t& other) {
+  void entity_attributes_t::update_attrs(const entity_attributes_t& other) {
     //TODO
   }
 

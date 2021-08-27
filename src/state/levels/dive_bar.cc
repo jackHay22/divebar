@@ -122,6 +122,6 @@ namespace levels {
   void dive_bar_t::update_player(int x, int y,
                                  const entity::entity_attributes_t& player_attributes) {
     this->get_nth_child(player_idx).set_position(x,y);
-    this->get_nth_child<entity::entity_t>(player_idx).get_attributes().update(player_attributes);
+    this->get_nth_child<entity::entity_t>(player_idx).get_attributes().update_attrs(player_attributes);
   }
 }}
