@@ -68,7 +68,7 @@ namespace levels {
 
     //add the pool minigame trigger
     this->add_child(std::make_unique<minigames::pool_game_t>(
-      SDL_Rect{60, 50, 0, 0}
+      SDL_Rect{60, 50, 8, 8}
     ));
 
     //add the door to outside

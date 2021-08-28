@@ -11,6 +11,7 @@
 #include <SDL2/SDL_image.h>
 #include "../../common/component.h"
 #include "entity_attributes.h"
+#include <stdint.h>
 
 namespace state {
 namespace entity {
@@ -49,8 +50,9 @@ namespace entity {
      * Constructor
      * @param position starting position
      * @param health starting health for the entity
+     * @param flags optionally add flags
      */
-    entity_t(SDL_Rect position, int health);
+    entity_t(SDL_Rect position, int health, uint8_t flags=0);
     entity_t(const entity_t&) = delete;
     entity_t& operator=(const entity_t&) = delete;
 

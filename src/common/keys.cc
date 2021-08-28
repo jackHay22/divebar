@@ -17,7 +17,7 @@ namespace common {
    * @param key the key to display
    * @param key_sheet the key images
    */
-  keys_t::keys_t(char key)
+  keys_t::keys_t(SDL_Keycode key)
     : component_t({0,0,0,0}, COMPONENT_ALWAYS_VISIBLE),
       key(key),
       sample_bounds({0,0,0,0}) {}
@@ -32,13 +32,13 @@ namespace common {
                     const common::component_t& parent,
                     common::shared_resources& resources) {
     int offset = 0;
-    if (key == 'W') {
+    if (key == SDLK_w) {
       offset = KEY_W * 1;
-    } else if (key == 'A') {
+    } else if (key == SDLK_a) {
       offset = KEY_W * 2;
-    } else if (key == 'S') {
+    } else if (key == SDLK_s) {
       offset = KEY_W * 3;
-    } else if (key == 'D') {
+    } else if (key == SDLK_d) {
       offset = KEY_W * 4;
     }
     //keys in image are: E,W,A,S,D

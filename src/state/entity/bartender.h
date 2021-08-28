@@ -10,7 +10,6 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 #include "../../common/component.h"
-#include "../../common/interactive_component.h"
 #include "../../common/shared_resources.h"
 #include "../../common/image.h"
 #include "player.h"
@@ -38,33 +37,6 @@ namespace entity {
     size_t action_walk;
     size_t action_idle;
 
-    //interactive component
-    class serve_drink : public common::interactive_component_t {
-    private:
-      /**
-       * Called when the player interacts with this game
-       * @param parent the parent
-       * @param player the player
-       */
-      void interact_entered(common::component_t& parent,
-                           state::entity::player_t& player) override;
-
-      /**
-       * Called when the player leaves the interaction radius
-       * @param parent the parent
-       * @param player the player
-       */
-      void interact_exited(common::component_t& parent,
-                           state::entity::player_t& player) override;
-    public:
-
-      /**
-       * Constructor
-       * @param position the position to trigger interaction from
-       */
-      serve_drink(SDL_Rect position);
-    };
-
     /**
      * Load any resources for this component
      * @param renderer the sdl renderer for loading images
@@ -80,6 +52,22 @@ namespace entity {
      */
     void update(common::component_t& parent) override;
 
+    /**
+     * Called when the player interacts with this component
+     * @param parent the parent
+     * @param player the player
+     */
+    void interact_entered(component_t& parent,
+                           state::entity::player_t& player) override;
+
+    /**
+     * Called when the player leaves the interaction radius
+     * @param parent the parent
+     * @param player the player
+     */
+    void interact_exited(component_t& parent,
+                         state::entity::player_t& player) override;
+
   public:
     /**
      * Constructor
@@ -90,16 +78,6 @@ namespace entity {
     bartender_t(int x, int y);
     bartender_t(const bartender_t&) = delete;
     bartender_t& operator=(const bartender_t&) = delete;
-
-    /**
-     * Bartender goes to the taps
-     */
-    void serve_drink_action();
-
-    /**
-     * Player left, can reset
-     */
-    void serve_drink_reset();
   };
 
 }}

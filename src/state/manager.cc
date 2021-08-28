@@ -16,7 +16,7 @@ namespace state {
    * Constructor
    */
   manager_t::manager_t(SDL_Renderer& renderer, const std::string& resource_dir)
-    : component_t({0,0,0,0},COMPONENT_ALWAYS_VISIBLE,resource_dir),
+    : component_t({0,0,0,0},COMPONENT_ALWAYS_VISIBLE,SDLK_e,resource_dir),
       current_state(0),
       camera({0,0,window::LOGICAL_W_PX,window::LOGICAL_H_PX}) {
     //load child states

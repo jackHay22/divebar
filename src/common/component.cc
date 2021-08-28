@@ -5,11 +5,11 @@
  */
 
 #include "component.h"
-#include "interactive_component.h"
 #include "../state/entity/player.h"
 #ifndef __APPLE__
 #include <filesystem>
 #endif
+#include "keys.h"
 
 namespace common {
 
@@ -17,15 +17,26 @@ namespace common {
    * Constructor
    * @param bounds the bounds of the component
    * @param flags  attributes
+   * @param interaction_key the key to trigger player interaction (if applicable)
    */
   component_t::component_t(SDL_Rect&& bounds,
                            uint8_t flags,
+                           SDL_Keycode interaction_key,
                            const std::string& resource_dir_prefix)
     : parent(nullptr),
       children(),
       bounds(bounds),
       flags(flags),
-      resource_dir_prefix(resource_dir_prefix) {}
+      interaction_key(interaction_key),
+      resource_dir_prefix(resource_dir_prefix),
+      can_interact(true) {
+
+    //add interaction key prompt child
+    if ((flags & COMPONENT_INTERACTIVE) &&
+        !(flags & COMPONENT_AUTO_INTERACT)) {
+      this->add_child(std::make_unique<common::keys_t>(interaction_key));
+    }
+  }
 
   /**
    * Copy constructor
@@ -36,7 +47,9 @@ namespace common {
       children(),
       bounds(other.bounds),
       flags(other.flags),
-      resource_dir_prefix(other.resource_dir_prefix) {}
+      interaction_key(other.interaction_key),
+      resource_dir_prefix(other.resource_dir_prefix),
+      can_interact(other.can_interact) {}
 
   /**
    * Assignment operator
@@ -46,7 +59,9 @@ namespace common {
     this->parent = other.parent;
     this->bounds = other.bounds;
     this->flags = other.flags;
+    this->interaction_key = other.interaction_key;
     this->resource_dir_prefix = other.resource_dir_prefix;
+    this->can_interact = other.can_interact;
     return *this;
   }
 
@@ -82,30 +97,55 @@ namespace common {
    */
   void component_t::update_interactive_components(state::entity::player_t& player) {
     for (size_t i=0; i<children.size(); i++) {
-      if (interactive_component_t *c = dynamic_cast<interactive_component_t*>(children.at(i).get())) {
-        c->update_player_distance(*this,player);
-      }
+      //filter for interactive components only
+      if (children.at(i)->flags & COMPONENT_INTERACTIVE) {
+        //check if this child is within the interactive range
+        bool prev = children.at(i)->can_interact;
+        const SDL_Rect& child_bounds = children.at(i)->bounds;
 
+        //check if the player interacts
+        children.at(i)->can_interact = ((child_bounds.x < (player.bounds.x + player.bounds.w)) &&
+                                       ((child_bounds.x + child_bounds.w) > player.bounds.x) &&
+                                       (child_bounds.y < (player.bounds.y + player.bounds.h)) &&
+                                       ((child_bounds.y + child_bounds.h) > player.bounds.y));
+
+        //check if the interaction is automatic
+        if ((children.at(i)->flags & COMPONENT_AUTO_INTERACT) &&
+            (children.at(i)->can_interact && !prev) ){
+          children.at(i)->interact_entered(*this,player);
+        }
+
+        //check for exit
+        if (!children.at(i)->can_interact && prev) {
+          children.at(i)->interact_exited(*this,player);
+        }
+      }
       //recurse down component tree
       children.at(i)->update_interactive_components(player);
     }
   }
 
   /**
-   * Handle event, pass player to interactive components
-   * @param parent the parent component
+   * Handle events for interactive components (takes player)
    * @param e      the event
    * @param player the player
    */
-  void component_t::handle_event_with_player(component_t& parent,
-                                             const SDL_Event& e,
-                                             state::entity::player_t& player) {
+  void component_t::interactive_components_handle_event(const SDL_Event& e,
+                                                        state::entity::player_t& player) {
     for (size_t i=0; i<children.size(); i++) {
-      if (interactive_component_t *c = dynamic_cast<interactive_component_t*>(children.at(i).get())) {
-        c->handle_event_player(*this,e,player);
+      //check for components that are manually interactive
+      if ((children.at(i)->flags & COMPONENT_INTERACTIVE) &&
+          !(children.at(i)->flags & COMPONENT_AUTO_INTERACT)) {
+
+        if ((e.type == SDL_KEYDOWN) &&
+            children.at(i)->can_interact &&
+            (e.key.keysym.sym == children.at(i)->interaction_key)) {
+          children.at(i)->interact_entered(*this,player);
+        }
       }
+
       //recurse
-      children.at(i)->handle_event_with_player(*this,e,player);
+      children.at(i)->interactive_components_handle_event(e,player);
     }
   }
 
@@ -141,26 +181,14 @@ namespace common {
    * @param parent the parent component
    */
   void component_t::update(component_t& parent) {
-    bool depth_has_player = false;
-    state::entity::player_t* player = nullptr;
-
-    //update each in the x direction
+    //update each child
     for (size_t i=0; i<children.size(); i++) {
       update_child(i);
-
-      if (state::entity::player_t* p = dynamic_cast<state::entity::player_t*>(children.at(i).get())) {
-        depth_has_player = true;
-        player = p;
-      }
-    }
-
-    if (depth_has_player) {
-      update_interactive_components(*player);
     }
   }
 
   /**
-   * Updater a single child
+   * Update a single child
    * @param idx the index of the child
    */
   void component_t::update_child(size_t idx) {
@@ -191,6 +219,11 @@ namespace common {
         children.at(idx)->bounds = old_position;
       }
     }
+
+    //check whether this is the player
+    if (state::entity::player_t* player = dynamic_cast<state::entity::player_t*>(children.at(idx).get())) {
+      update_interactive_components(*player);
+    }
   }
 
   /**
@@ -200,23 +233,9 @@ namespace common {
    */
   void component_t::handle_event(component_t& parent,
                                  const SDL_Event& e) {
-    bool depth_has_player = false;
-    state::entity::player_t* player = nullptr;
-
     //pass to children
     for (size_t i=0; i<children.size(); i++) {
-      children.at(i)->handle_event(*this,e);
-
-      //attempt to cast to player
-      if (state::entity::player_t* p = dynamic_cast<state::entity::player_t*>(children.at(i).get())) {
-        depth_has_player = true;
-        player = p;
-      }
-    }
-
-    if (depth_has_player) {
-      //pass player to interactive components as well
-      handle_event_with_player(parent,e,*player);
+      child_handle_event(e,i);
     }
   }
 
@@ -227,6 +246,11 @@ namespace common {
    */
   void component_t::child_handle_event(const SDL_Event& e, size_t idx) {
     children.at(idx)->handle_event(*this,e);
+
+    //check if this is the player
+    if (state::entity::player_t* player = dynamic_cast<state::entity::player_t*>(children.at(idx).get())) {
+      interactive_components_handle_event(e,*player);
+    }
   }
 
   /**
@@ -251,8 +275,11 @@ namespace common {
    */
   void component_t::render_fg(SDL_Renderer& renderer,
                               const SDL_Rect& camera) const {
-    for (size_t i=0; i<children.size(); i++) {
-      render_fg_child(renderer,camera,i);
+    //by default, only render interactive component children if player can interact
+    if (!(this->flags & COMPONENT_INTERACTIVE) || this->can_interact) {
+      for (size_t i=0; i<children.size(); i++) {
+        render_fg_child(renderer,camera,i);
+      }
     }
   }
 

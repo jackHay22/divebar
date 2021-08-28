@@ -8,7 +8,6 @@
 #define _DIVEBAR_STATE_MINIGAMES_POOL_H
 
 #include <SDL2/SDL.h>
-#include "../../common/interactive_component.h"
 #include "../../common/shared_resources.h"
 #include "../entity/player.h"
 
@@ -18,7 +17,7 @@ namespace minigames {
   /*
    * Pool minigame
    */
-  class pool_game_t : public common::interactive_component_t {
+  class pool_game_t : public common::component_t {
   private:
 
     /**
@@ -32,7 +31,7 @@ namespace minigames {
               common::shared_resources& resources) override;
 
     /**
-     * Called when the player interacts with this game
+     * Called when the player interacts with this component
      * @param parent the parent
      * @param player the player
      */

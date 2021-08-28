@@ -29,6 +29,8 @@ namespace common {
   #define COMPONENT_GRAVITY        0x10 // This component is effected by gravity
   #define COMPONENT_REMOVE         0x08 // this component should be removed
   #define COMPONENT_ALWAYS_VISIBLE 0x04 // this component should always be rendererd (regardless of camera position)
+  #define COMPONENT_INTERACTIVE    0x02 // this component can be interacted with (by the player)
+  #define COMPONENT_AUTO_INTERACT  0x01 // interaction is triggered automatically
 
   #define GRAVITY_PER_TICK 2
 
@@ -43,8 +45,12 @@ namespace common {
     SDL_Rect bounds;
     //the flags for this component
     uint8_t flags;
+    //the interaction key
+    SDL_Keycode interaction_key;
     //directory to prefix paths to load resources from
     std::string resource_dir_prefix;
+    //whether the player is within the interaction radius
+    bool can_interact;
 
     /**
      * Calculate collisions for a child
@@ -60,14 +66,12 @@ namespace common {
     void update_interactive_components(state::entity::player_t& player);
 
     /**
-     * Handle event, pass player to interactive components
-     * @param parent the parent component
+     * Handle events for interactive components (takes player)
      * @param e      the event
      * @param player the player
      */
-    void handle_event_with_player(component_t& parent,
-                                  const SDL_Event& e,
-                                  state::entity::player_t& player);
+    void interactive_components_handle_event(const SDL_Event& e,
+                                             state::entity::player_t& player);
 
   protected:
     /**
@@ -202,15 +206,33 @@ namespace common {
     void debug_render_bounds(SDL_Renderer& renderer,
                              const SDL_Rect& camera) const;
 
+    /**
+     * Called when the player interacts with this component
+     * @param parent the parent
+     * @param player the player
+     */
+    virtual void interact_entered(component_t& parent,
+                                 state::entity::player_t& player) {}
+
+    /**
+     * Called when the player leaves the interaction radius
+     * @param parent the parent
+     * @param player the player
+     */
+    virtual void interact_exited(component_t& parent,
+                                state::entity::player_t& player) {}
+
   public:
     /**
      * Constructor
      * @param bounds the bounds of the component
      * @param flags  attributes
+     * @param interaction_key the key to trigger player interaction (if applicable)
      * @param resource_dir_prefix a prefix to add to resource load paths
      */
     component_t(SDL_Rect&& bounds,
                 uint8_t flags,
+                SDL_Keycode interaction_key=SDLK_e,
                 const std::string& resource_dir_prefix="");
 
     /**

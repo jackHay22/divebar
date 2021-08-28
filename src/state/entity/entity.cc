@@ -15,10 +15,10 @@ namespace entity {
    * @param position starting position
    * @param health starting health for the entity
    */
-  entity_t::entity_t(SDL_Rect position, int health)
+  entity_t::entity_t(SDL_Rect position, int health, uint8_t flags)
     : common::component_t(std::move(position), COMPONENT_VISIBLE |
                                                COMPONENT_COLLIDABLE |
-                                               COMPONENT_GRAVITY),
+                                               COMPONENT_GRAVITY | flags),
       health(health),
       attributes_idx(0),
       current_action(0),

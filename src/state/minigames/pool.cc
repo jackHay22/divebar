@@ -5,6 +5,7 @@
  */
 
 #include "pool.h"
+#include <memory>
 #include <iostream>
 
 namespace state {
@@ -14,12 +15,7 @@ namespace minigames {
    * Default constructor
    */
   pool_game_t::pool_game_t(SDL_Rect position)
-    : common::interactive_component_t(
-        position,
-        COMPONENT_ALWAYS_VISIBLE,
-        SDLK_e,
-        16
-      ) {}
+    : common::component_t(std::move(position), COMPONENT_VISIBLE | COMPONENT_INTERACTIVE) {}
 
   /**
    * Load any resources for this component
@@ -30,17 +26,20 @@ namespace minigames {
   void pool_game_t::load(SDL_Renderer& renderer,
                           const common::component_t& parent,
                           common::shared_resources& resources) {
-    interactive_component_t::load(renderer,parent,resources);
+    //load game resources
 
-    //TODO
+
+    //load any children (including key)
+    component_t::load_children(renderer,resources);
   }
 
   /**
-   * Called when the player interacts with this game
+   * Called when the player interacts with this component
    * @param parent the parent
    * @param player the player
    */
-  void pool_game_t::interact_entered(component_t& parent, state::entity::player_t& player) {
-    std::cout << "interaction handler for pool called" << std::endl;
+  void pool_game_t::interact_entered(component_t& parent,
+                        state::entity::player_t& player) {
+    std::cout << "pool game entered" << std::endl;
   }
 }}

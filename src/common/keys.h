@@ -21,7 +21,7 @@ namespace common {
   class keys_t : public component_t {
   private:
     //the key to display
-    char key;
+    SDL_Keycode key;
     //the images for all keys
     std::shared_ptr<image_t> key_sheet;
     //the sample bounds from the key sheet
@@ -50,7 +50,7 @@ namespace common {
      * Default constructor
      * @param key the key to display
      */
-    keys_t(char key);
+    keys_t(SDL_Keycode key);
     keys_t(const keys_t&) = delete;
     keys_t& operator=(const keys_t&) = delete;
   };

@@ -21,7 +21,7 @@ namespace entity {
    * @param y position y
    */
   bartender_t::bartender_t(int x, int y)
-    : entity_t({x,y,ANIM_W,ANIM_H},100),
+    : entity_t({x,y,ANIM_W,ANIM_H},100, COMPONENT_INTERACTIVE | COMPONENT_AUTO_INTERACT),
       working(false),
       idle_cycle_duration(0),
       rem_idle_cycles(0),
@@ -29,40 +29,7 @@ namespace entity {
       action_serve(0),
       action_walk(0),
       action_idle(0) {}
-
-  /**
-   * Constructor
-   * @param position the position to trigger interaction from
-   */
-  bartender_t::serve_drink::serve_drink(SDL_Rect position)
-    : common::interactive_component_t(
-      position,
-      COMPONENT_VISIBLE,
-      SDLK_e, //unused
-      16,
-      true
-    ) {}
-
-  /**
-   * Called when the player interacts with this game
-   * @param parent the parent
-   * @param player the player
-   */
-  void bartender_t::serve_drink::interact_entered(common::component_t& parent,
-                                                  state::entity::player_t& player) {
-    parent.get_as<bartender_t>().serve_drink_action();
-  }
-
-  /**
-   * Called when the player leaves the interaction radius
-   * @param parent the parent
-   * @param player the player
-   */
-  void bartender_t::serve_drink::interact_exited(common::component_t& parent,
-                                                 state::entity::player_t& player) {
-    parent.get_as<bartender_t>().serve_drink_reset();
-  }
-
+      
   /**
    * Load any resources for this component
    * @param renderer the sdl renderer for loading images
@@ -100,11 +67,6 @@ namespace entity {
         2, 12, 3
       )
     );
-
-    //add interactive component
-    this->add_child(std::make_unique<bartender_t::serve_drink>(
-      this->get_bounds()
-    ));
 
     //Set the starting action
     current_action = action_serve;
@@ -144,10 +106,14 @@ namespace entity {
     common::component_t::update_child(current_action);
   }
 
+
   /**
-   * Bartender goes to the taps
+   * Called when the player interacts with this component
+   * @param parent the parent
+   * @param player the player
    */
-  void bartender_t::serve_drink_action() {
+  void bartender_t::interact_entered(component_t& parent,
+                                      state::entity::player_t& player) {
     if (!working && !needs_reset) {
       //player will need to leave to trigger this again
       needs_reset = true;
@@ -162,9 +128,12 @@ namespace entity {
   }
 
   /**
-   * Player left, can reset
+   * Called when the player leaves the interaction radius
+   * @param parent the parent
+   * @param player the player
    */
-  void bartender_t::serve_drink_reset() {
+  void bartender_t::interact_exited(component_t& parent,
+                                    state::entity::player_t& player) {
     needs_reset = false;
   }
 
