@@ -78,9 +78,11 @@ namespace common {
    * @param parent   the parent of this component
    * @param resources the shared global resources
    */
-  void anim_t::load(SDL_Renderer&,
+  void anim_t::load(SDL_Renderer& renderer,
                     const common::component_t&,
-                    common::shared_resources&) {}
+                    common::shared_resources& resources) {
+    component_t::load_children(renderer,resources);
+  }
 
   /**
    * Update the animation

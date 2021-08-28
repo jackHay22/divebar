@@ -244,6 +244,8 @@ namespace tilemap {
       throw common::launch_exception("failed to read from map file: " +
         path + ", layer " + std::to_string(idx) + " (nothing loaded)");
     }
+
+    component_t::load_children(renderer,resources);
   }
 
   /**
