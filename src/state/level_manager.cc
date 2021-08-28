@@ -7,6 +7,7 @@
 #include "level_manager.h"
 #include <memory>
 #include "levels/dive_bar.h"
+#include "levels/exterior.h"
 #include "../common/image.h"
 
 namespace state {
@@ -29,6 +30,7 @@ namespace state {
                                 common::shared_resources& resources) {
     //load the different map regions
     this->add_child(std::make_unique<levels::dive_bar_t>());
+    this->add_child(std::make_unique<levels::exterior_t>());
 
     //load child resources
     component_t::load_children(renderer,resources);
@@ -49,6 +51,7 @@ namespace state {
                                const SDL_Rect& camera) const {
     //render the active region
     common::component_t::render_child(renderer,camera,current_map_location);
+    common::component_t::render_fg_child(renderer,camera,current_map_location);
   }
 
   /**

@@ -59,7 +59,6 @@ namespace state {
   void manager_t::render_manager(SDL_Renderer& renderer) const {
     //render the active state
     common::component_t::render_child(renderer,camera,current_state);
-    common::component_t::render_fg_child(renderer,camera,current_state);
   }
 
   /**

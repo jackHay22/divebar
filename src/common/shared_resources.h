@@ -24,6 +24,7 @@ namespace common {
     std::shared_ptr<image_t> key_image;
     std::shared_ptr<image_t> player_image;
     std::shared_ptr<image_t> divebar_tileset;
+    std::shared_ptr<image_t> exterior_tileset;
 
     /**
      * Default constructor

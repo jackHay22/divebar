@@ -16,5 +16,6 @@ namespace common {
   shared_resources::shared_resources(SDL_Renderer& renderer, const std::string& resource_dir)
     : key_image(std::make_shared<image_t>(renderer, resource_dir + "tilesets/keys.png")),
       player_image(std::make_shared<image_t>(renderer, resource_dir + "animations/player.png")),
-      divebar_tileset(std::make_shared<image_t>(renderer, resource_dir + "tilesets/bar.png")) {}
+      divebar_tileset(std::make_shared<image_t>(renderer, resource_dir + "tilesets/bar.png")),
+      exterior_tileset(std::make_shared<image_t>(renderer, resource_dir + "tilesets/exterior.png")) {}
 }

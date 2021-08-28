@@ -4,8 +4,8 @@
  * All rights reserved
  */
 
-#ifndef _DIVEBAR_STATE_LEVELS_DIVEBAR_H
-#define _DIVEBAR_STATE_LEVELS_DIVEBAR_H
+#ifndef _DIVEBAR_STATE_LEVELS_EXTERIOR_H
+#define _DIVEBAR_STATE_LEVELS_EXTERIOR_H
 
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
@@ -17,9 +17,9 @@ namespace state {
 namespace levels {
 
   /*
-   * Divebar level map
+   * Exterior map
    */
-  class dive_bar_t : public level_t {
+  class exterior_t : public level_t {
   private:
     //the index of the player (as a child)
     size_t player_idx;
@@ -43,9 +43,9 @@ namespace levels {
     /**
      * Default constructor
      */
-    dive_bar_t();
-    dive_bar_t(const dive_bar_t&) = delete;
-    dive_bar_t& operator=(const dive_bar_t&) = delete;
+    exterior_t();
+    exterior_t(const exterior_t&) = delete;
+    exterior_t& operator=(const exterior_t&) = delete;
 
     /**
      * Move the player to some position in this level
@@ -59,4 +59,4 @@ namespace levels {
 
 }}
 
-#endif /*_DIVEBAR_STATE_LEVELS_DIVEBAR_H*/
+#endif /*_DIVEBAR_STATE_LEVELS_EXTERIOR_H*/

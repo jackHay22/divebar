@@ -169,7 +169,6 @@ namespace common {
                       const SDL_Rect& camera,
                       size_t idx) const;
 
-
     /**
      * Render a single child fg components
      * @param renderer the sdl renderer

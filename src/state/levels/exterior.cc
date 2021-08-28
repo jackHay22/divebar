@@ -4,14 +4,11 @@
  * All rights reserved
  */
 
-#include "dive_bar.h"
+#include "exterior.h"
 #include "door.h"
 #include "../tilemap/tilemap.h"
 #include "../entity/player.h"
 #include "../entity/entity.h"
-#include "../entity/pool_player.h"
-#include "../entity/bartender.h"
-#include "../minigames/pool.h"
 #include "../../common/image.h"
 #include "../../window/window.h"
 
@@ -21,7 +18,7 @@ namespace levels {
   /**
    * Default constructor
    */
-  dive_bar_t::dive_bar_t()
+  exterior_t::exterior_t()
     : level_t(),
       player_idx(0) {}
 
@@ -31,26 +28,15 @@ namespace levels {
    * @param parent   the parent of this component
    * @param resources the shared global resources
    */
-  void dive_bar_t::load(SDL_Renderer& renderer,
+  void exterior_t::load(SDL_Renderer& renderer,
                         const common::component_t& parent,
                         common::shared_resources& resources) {
-
     //add background map layers
     this->add_child(std::make_unique<tilemap::tilemap_t>(
-      this->rsrc_path("maps/bar.txt"),
-      resources.divebar_tileset,
-      std::vector<int>{0,1,2},
+      this->rsrc_path("maps/exterior.txt"),
+      resources.exterior_tileset,
+      std::vector<int>{0,1},
       -1
-    ));
-
-    //add the pool player
-    this->add_child(std::make_unique<entity::pool_player_t>(
-      44,40
-    ));
-
-    //load the bartender
-    this->add_child(std::make_unique<entity::bartender_t>(
-      208, 75
     ));
 
     //load the player
@@ -60,21 +46,16 @@ namespace levels {
 
     //load the foreground map layers (includes ground)
     size_t fg_idx = this->add_child(std::make_unique<tilemap::tilemap_t>(
-      this->rsrc_path("maps/bar.txt"),
-      resources.divebar_tileset,
-      std::vector<int>{3,4},
+      this->rsrc_path("maps/exterior.txt"),
+      resources.exterior_tileset,
+      std::vector<int>{2,3},
       0 // index of solid layer
     ));
 
-    //add the pool minigame trigger
-    this->add_child(std::make_unique<minigames::pool_game_t>(
-      SDL_Rect{60, 50, 8, 8}
-    ));
-
-    //add the door to outside
+    //add the door to inside
     this->add_child(std::make_unique<door_t>(
-      SDL_Rect{272,80,10,24},
-      1, 144, 32
+      SDL_Rect{144,32,8,24},
+      0, 272, 80
     ));
 
     //load children
@@ -89,7 +70,7 @@ namespace levels {
   /**
    * Update the state
    */
-  void dive_bar_t::update(common::component_t& parent) {
+  void exterior_t::update(common::component_t& parent) {
     //get the player position
     const SDL_Rect& player_bounds = this->get_nth_child(player_idx).get_bounds();
 
@@ -100,14 +81,13 @@ namespace levels {
     component_t::update(parent);
   }
 
-
   /**
    * Move the player to some position in this level
    * @param x new player position x
    * @param y new player position y
    * @param player_attributes the attributes of the player to update
    */
-  void dive_bar_t::update_player(int x, int y,
+  void exterior_t::update_player(int x, int y,
                                  const entity::entity_attributes_t& player_attributes) {
     this->get_nth_child(player_idx).set_position(x,y);
     this->get_nth_child<entity::entity_t>(player_idx).get_attributes().update_attrs(player_attributes);
